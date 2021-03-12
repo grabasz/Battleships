@@ -1,18 +1,38 @@
+using System.Collections.Generic;
 using NUnit.Framework;
 
-namespace Domain.Battleships
+namespace Domain.Battleships.Test
 {
-    public class Tests
+    public class GameTest
     {
-        [SetUp]
-        public void Setup()
+        [Test]
+        public void ShouldInitializeGame()
         {
+            Game g = new Game();
+
+            List<ShipCoordinates> ships = new List<ShipCoordinates>();
+
+            g.Initialize(ships);
         }
 
-        [Test]
-        public void Test1()
+    }
+
+    public class ShipCoordinates { 
+        Coordinate ShipFront { get; set; }
+        Coordinate ShipBack { get; set; }
+    }
+
+    internal class Coordinate
+    {
+        int Raw { get; set; }
+        int Column { get; set; }
+    }
+
+    public class Game
+    {
+        public void Initialize(List<ShipCoordinates> ships)
         {
-            Assert.Pass();
+            throw new System.NotImplementedException();
         }
     }
 }
