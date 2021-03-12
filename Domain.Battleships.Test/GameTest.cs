@@ -10,7 +10,7 @@ namespace Domain.Battleships.Test
         [Test]
         public void ShouldInitializeGameWithOne5FlagShip()
         {
-            Game g = new Game();
+            Game game = new Game();
 
             List<ShipCoordinates> ships = new List<ShipCoordinates>
             {
@@ -29,7 +29,9 @@ namespace Domain.Battleships.Test
                 }
             };
 
-            g.Initialize(ships);
+            game.Initialize(ships);
+            game.IsShip(0, 0).Should().BeTrue();
+            game.IsShip(0, 1).Should().BeFalse();
         }
 
         [TestCase("A",0)]
@@ -77,9 +79,54 @@ namespace Domain.Battleships.Test
 
     public class Game
     {
+        private const int BoardSize = 10;
+        private bool[,] board = new bool[BoardSize, BoardSize];
         public void Initialize(List<ShipCoordinates> ships)
         {
-            throw new System.NotImplementedException();
+            foreach (var ship in ships)
+            {
+                for (var columnIndex = 0; columnIndex < BoardSize; columnIndex++)
+                {
+                    for (var rowIndex = 0; rowIndex < BoardSize; rowIndex++)
+                    {
+                        if (IsShipWithinCoordinates(ship, rowIndex, columnIndex))
+                            board[rowIndex,columnIndex] = true;
+                    }
+                }
+            }
         }
+
+        private bool IsShipWithinCoordinates(ShipCoordinates ship, in int rowIndex, in int columnIndex)
+        {
+            if (ship.ShipFront.RowToIndex == ship.ShipBack.RowToIndex)
+            {
+                return ship.ShipFront.ColumnToIndex - ship.ShipBack.ColumnToIndex > 0
+                    ? ship.ShipFront.ColumnToIndex >= columnIndex && columnIndex <= ship.ShipBack.ColumnToIndex
+                    : ship.ShipFront.ColumnToIndex <= columnIndex && columnIndex >= ship.ShipBack.ColumnToIndex;
+            }
+
+            if (ship.ShipFront.ColumnToIndex == ship.ShipBack.ColumnToIndex)
+            {
+                return ship.ShipFront.RowToIndex - ship.ShipBack.RowToIndex > 0
+                    ? ship.ShipFront.RowToIndex >= rowIndex && rowIndex <= ship.ShipBack.RowToIndex
+                    : ship.ShipFront.RowToIndex <= rowIndex && rowIndex >= ship.ShipBack.RowToIndex;
+            }
+
+            throw new Exception("Unable to put ship diagonally");
+
+        }
+
+        public bool IsShip(int row, int column)
+        {
+            return true;
+        }
+    }
+
+    internal enum Status
+    {
+        blank,
+        hit,
+        miss,
+        shipHasSunk
     }
 }
