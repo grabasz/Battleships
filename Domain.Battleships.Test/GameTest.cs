@@ -8,7 +8,7 @@ namespace Domain.Battleships.Test
     public class GameTest
     {
         [Test]
-        public void ShouldInitializeGameWithOne5FlagShip()
+        public void ShouldInitializeGameWithOne5FlagShipVertical()
         {
             Game game = new Game();
 
@@ -30,8 +30,37 @@ namespace Domain.Battleships.Test
             };
 
             game.Initialize(ships);
-            game.IsShip(0, 0).Should().BeTrue();
+
             game.IsShip(0, 1).Should().BeFalse();
+            game.IsShip(4, 0).Should().BeTrue();
+        }
+        
+        [Test]
+        public void ShouldInitializeGameWithOne5FlagShipHorizontal()
+        {
+            Game game = new Game();
+
+            List<ShipCoordinates> ships = new List<ShipCoordinates>
+            {
+                new ShipCoordinates
+                {
+                    ShipFront = new Coordinate
+                    {
+                        Column = "A",
+                        Row = "1"
+                    },
+                    ShipBack = new Coordinate
+                    {
+                        Column = "E",
+                        Row = "1"
+                    }
+                }
+            };
+
+            game.Initialize(ships);
+
+            game.IsShip(0, 1).Should().BeTrue();
+            game.IsShip(4, 0).Should().BeFalse();
         }
 
         [TestCase("A",0)]
@@ -73,7 +102,7 @@ namespace Domain.Battleships.Test
         public string Column { get; set; }
 
         public int RowToIndex => Int32.Parse(Row) - 1;
-        public int ColumnToIndex => Column[0] %32  - 1;
+        public int ColumnToIndex => Column.ToUpper()[0] %32  - 1;
 
     }
 
@@ -91,14 +120,18 @@ namespace Domain.Battleships.Test
                     {
                         if (IsShipWithinCoordinates(ship, rowIndex, columnIndex))
                             board[rowIndex,columnIndex] = true;
+
+                        Console.Write(board[rowIndex, columnIndex] + " ");
                     }
+
+                    Console.WriteLine();
                 }
             }
         }
 
         private bool IsShipWithinCoordinates(ShipCoordinates ship, int rowIndex, int columnIndex)
         {
-            if (ship.ShipFront.RowToIndex == ship.ShipBack.RowToIndex)
+            if (IsShipHorizontal(ship))
             {
                 if (rowIndex != ship.ShipFront.RowToIndex)
                     return false;
@@ -107,17 +140,33 @@ namespace Domain.Battleships.Test
                     : ship.ShipFront.ColumnToIndex >= columnIndex && columnIndex <= ship.ShipBack.ColumnToIndex;
             }
 
-            if (ship.ShipFront.ColumnToIndex == ship.ShipBack.ColumnToIndex)
+            if (IsShipVertical(ship))
             {
-                if (columnIndex != ship.ShipFront.ColumnToIndex)
+                if (IsNotMatchingRowColumn(ship.ShipFront.ColumnToIndex, columnIndex))
                     return false;
-                return ship.ShipFront.RowToIndex - ship.ShipBack.RowToIndex > 0
-                    ? ship.ShipFront.RowToIndex <= rowIndex && rowIndex >= ship.ShipBack.RowToIndex
-                    : ship.ShipFront.RowToIndex >= rowIndex && rowIndex <= ship.ShipBack.RowToIndex;
+                var i = ship.ShipFront.RowToIndex - ship.ShipBack.RowToIndex;
+                return i > 0
+                    ? ship.ShipFront.RowToIndex >= rowIndex && ship.ShipBack.RowToIndex <= rowIndex
+                    : ship.ShipFront.RowToIndex <= rowIndex && ship.ShipBack.RowToIndex >= rowIndex;
             }
 
             throw new Exception("Unable to put ship diagonally");
 
+        }
+
+        private static bool IsNotMatchingRowColumn(int shipFrontColumnToIndex, int columnIndex)
+        {
+            return columnIndex != shipFrontColumnToIndex;
+        }
+
+        private static bool IsShipHorizontal(ShipCoordinates ship)
+        {
+            return ship.ShipFront.RowToIndex == ship.ShipBack.RowToIndex;
+        }
+
+        private static bool IsShipVertical(ShipCoordinates ship)
+        {
+            return ship.ShipFront.ColumnToIndex == ship.ShipBack.ColumnToIndex;
         }
 
         public bool IsShip(int row, int column)
