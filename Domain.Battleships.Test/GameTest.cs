@@ -109,7 +109,7 @@ namespace Domain.Battleships.Test
     public class Game
     {
         private const int BoardSize = 10;
-        private bool[,] board = new bool[BoardSize, BoardSize];
+        private readonly bool[,] _board = new bool[BoardSize, BoardSize];
         public void Initialize(List<ShipCoordinates> ships)
         {
             foreach (var ship in ships)
@@ -119,9 +119,9 @@ namespace Domain.Battleships.Test
                     for (var columnIndex = 0; columnIndex < BoardSize; columnIndex++)
                     {
                         if (IsShipWithinCoordinates(ship, rowIndex, columnIndex))
-                            board[rowIndex,columnIndex] = true;
+                            _board[rowIndex,columnIndex] = true;
 
-                        Console.Write(board[rowIndex, columnIndex] + " ");
+                        Console.Write(_board[rowIndex, columnIndex] + " ");
                     }
 
                     Console.WriteLine();
@@ -133,11 +133,10 @@ namespace Domain.Battleships.Test
         {
             if (IsShipHorizontal(ship))
             {
-                if (rowIndex != ship.ShipFront.RowToIndex)
+                if (IsNotMatchingRowColumn(ship.ShipFront.RowToIndex, rowIndex))
                     return false;
-                return ship.ShipFront.ColumnToIndex - ship.ShipBack.ColumnToIndex > 0
-                    ? ship.ShipFront.ColumnToIndex <= columnIndex && columnIndex >= ship.ShipBack.ColumnToIndex
-                    : ship.ShipFront.ColumnToIndex >= columnIndex && columnIndex <= ship.ShipBack.ColumnToIndex;
+
+                return IsOccupiedByShip(rowIndex, ship.ShipFront.ColumnToIndex, ship.ShipBack.ColumnToIndex);
             }
 
             if (IsShipVertical(ship))
@@ -145,13 +144,18 @@ namespace Domain.Battleships.Test
                 if (IsNotMatchingRowColumn(ship.ShipFront.ColumnToIndex, columnIndex))
                     return false;
 
-                return (ship.ShipFront.RowToIndex - ship.ShipBack.RowToIndex) > 0
-                    ? IsWithinRange(rowIndex, ship.ShipBack.RowToIndex, ship.ShipFront.RowToIndex)
-                    : IsWithinRange(rowIndex, ship.ShipFront.RowToIndex, ship.ShipBack.RowToIndex);
+                return IsOccupiedByShip(rowIndex, ship.ShipFront.RowToIndex, ship.ShipBack.RowToIndex);
             }
 
             throw new Exception("Unable to put ship diagonally");
 
+        }
+
+        private static bool IsOccupiedByShip(int rowIndex, int shipFrontRowToIndex, int shipBackRowToIndex)
+        {
+            return (shipFrontRowToIndex - shipBackRowToIndex) > 0
+                ? IsWithinRange(rowIndex, shipBackRowToIndex, shipFrontRowToIndex)
+                : IsWithinRange(rowIndex, shipFrontRowToIndex, shipBackRowToIndex);
         }
 
         private static bool IsWithinRange(int rowIndex, int shipLowerIndex, int shipGreaterIndex)
@@ -176,7 +180,7 @@ namespace Domain.Battleships.Test
 
         public bool IsShip(int row, int column)
         {
-            return board[row,column];
+            return _board[row,column];
         }
     }
 
