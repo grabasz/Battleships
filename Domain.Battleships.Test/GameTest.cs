@@ -144,14 +144,19 @@ namespace Domain.Battleships.Test
             {
                 if (IsNotMatchingRowColumn(ship.ShipFront.ColumnToIndex, columnIndex))
                     return false;
-                var i = ship.ShipFront.RowToIndex - ship.ShipBack.RowToIndex;
-                return i > 0
-                    ? ship.ShipFront.RowToIndex >= rowIndex && ship.ShipBack.RowToIndex <= rowIndex
-                    : ship.ShipFront.RowToIndex <= rowIndex && ship.ShipBack.RowToIndex >= rowIndex;
+
+                return (ship.ShipFront.RowToIndex - ship.ShipBack.RowToIndex) > 0
+                    ? IsWithinRange(rowIndex, ship.ShipBack.RowToIndex, ship.ShipFront.RowToIndex)
+                    : IsWithinRange(rowIndex, ship.ShipFront.RowToIndex, ship.ShipBack.RowToIndex);
             }
 
             throw new Exception("Unable to put ship diagonally");
 
+        }
+
+        private static bool IsWithinRange(int rowIndex, int shipLowerIndex, int shipGreaterIndex)
+        {
+            return shipLowerIndex <= rowIndex && shipGreaterIndex >= rowIndex;
         }
 
         private static bool IsNotMatchingRowColumn(int shipFrontColumnToIndex, int columnIndex)
