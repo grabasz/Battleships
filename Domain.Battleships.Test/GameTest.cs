@@ -63,6 +63,31 @@ namespace Domain.Battleships.Test
             game.IsShip(4, 0).Should().BeFalse();
         }
 
+        [Test]
+        public void ShouldThrowExceptionForDiagonalShip()
+        {
+            Game game = new Game();
+
+            List<ShipCoordinates> ships = new List<ShipCoordinates>
+            {
+                new ShipCoordinates
+                {
+                    ShipFront = new Coordinate
+                    {
+                        Column = "A",
+                        Row = "1"
+                    },
+                    ShipBack = new Coordinate
+                    {
+                        Column = "E",
+                        Row = "3"
+                    }
+                }
+            };
+
+            Assert.Throws<Exception>(() => game.Initialize(ships));
+        }
+
         [TestCase("A",0)]
         [TestCase("J",9)]
         public void ShouldMapColumnLetterCoordinatesToIndex(string column, int expected)
