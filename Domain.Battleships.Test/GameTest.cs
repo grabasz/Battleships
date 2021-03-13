@@ -101,7 +101,7 @@ namespace Domain.Battleships.Test
         public string Row { get; set; }
         public string Column { get; set; }
 
-        public int RowToIndex => Int32.Parse(Row) - 1;
+        public int RowToIndex => int.Parse(Row) - 1;
         public int ColumnToIndex => Column.ToUpper()[0] %32  - 1;
 
     }
@@ -136,7 +136,7 @@ namespace Domain.Battleships.Test
                 if (IsNotMatchingRowColumn(ship.ShipFront.RowToIndex, rowIndex))
                     return false;
 
-                return IsOccupiedByShip(rowIndex, ship.ShipFront.ColumnToIndex, ship.ShipBack.ColumnToIndex);
+                return IsOccupiedByShip(columnIndex, ship.ShipFront.ColumnToIndex, ship.ShipBack.ColumnToIndex);
             }
 
             if (IsShipVertical(ship))
@@ -151,16 +151,16 @@ namespace Domain.Battleships.Test
 
         }
 
-        private static bool IsOccupiedByShip(int rowIndex, int shipFrontRowToIndex, int shipBackRowToIndex)
+        private static bool IsOccupiedByShip(int index, int shipFrontIndex, int shipBackIndex)
         {
-            return (shipFrontRowToIndex - shipBackRowToIndex) > 0
-                ? IsWithinRange(rowIndex, shipBackRowToIndex, shipFrontRowToIndex)
-                : IsWithinRange(rowIndex, shipFrontRowToIndex, shipBackRowToIndex);
+            return (shipFrontIndex - shipBackIndex) > 0
+                ? IsWithinRange(index, shipBackIndex, shipFrontIndex)
+                : IsWithinRange(index, shipFrontIndex, shipBackIndex);
         }
 
-        private static bool IsWithinRange(int rowIndex, int shipLowerIndex, int shipGreaterIndex)
+        private static bool IsWithinRange(int index, int lowerIndex, int greaterIndex)
         {
-            return shipLowerIndex <= rowIndex && shipGreaterIndex >= rowIndex;
+            return lowerIndex <= index && greaterIndex >= index;
         }
 
         private static bool IsNotMatchingRowColumn(int shipFrontColumnToIndex, int columnIndex)
