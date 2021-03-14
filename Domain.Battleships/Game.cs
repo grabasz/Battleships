@@ -15,6 +15,8 @@ namespace Domain.Battleships
                 {
                     for (var columnIndex = 0; columnIndex < BoardSize; columnIndex++)
                     {
+                        if (_board[rowIndex, columnIndex])
+                            throw new Exception("Field already occupied by other ship");
                         if (IsShipWithinCoordinates(ship, rowIndex, columnIndex))
                             _board[rowIndex,columnIndex] = true;
 

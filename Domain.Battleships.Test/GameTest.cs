@@ -88,31 +88,84 @@ namespace Domain.Battleships.Test
             Assert.Throws<Exception>(() => game.Initialize(ships));
         }
 
-        [TestCase("A",0)]
-        [TestCase("J",9)]
-        public void ShouldMapColumnLetterCoordinatesToIndex(string column, int expected)
+
+        [Test]
+        public void ShouldThrowExceptionForOverlapingShips()
         {
-            var c = new Coordinate
+            Game game = new Game();
+
+            List<ShipCoordinates> ships = new List<ShipCoordinates>
             {
-                Column = column,
-                Row = "1"
+                new ShipCoordinates
+                {
+                    ShipFront = new Coordinate
+                    {
+                        Column = "A",
+                        Row = "1"
+                    },
+                    ShipBack = new Coordinate
+                    {
+                        Column = "E",
+                        Row = "1"
+                    }
+                },
+                new ShipCoordinates
+                {
+                    ShipFront = new Coordinate
+                    {
+                        Column = "A",
+                        Row = "1"
+                    },
+                    ShipBack = new Coordinate
+                    {
+                        Column = "E",
+                        Row = "1"
+                    }
+                }
             };
 
-            c.ColumnToIndex.Should().Be(expected);
+            Assert.Throws<Exception>(() => game.Initialize(ships));
         }
 
-        [TestCase("1",0)]
-        [TestCase("10",9)]
-        public void ShouldMapRowIntCoordinatesToIndex(string row, int expected)
+        [Test]
+        public void ShouldAllowForNonOverlapingShips()
         {
-            var c = new Coordinate
+            Game game = new Game();
+
+            List<ShipCoordinates> ships = new List<ShipCoordinates>
             {
-                Column = "A",
-                Row = row
+                new ShipCoordinates
+                {
+                    ShipFront = new Coordinate
+                    {
+                        Column = "A",
+                        Row = "1"
+                    },
+                    ShipBack = new Coordinate
+                    {
+                        Column = "E",
+                        Row = "1"
+                    }
+                },
+                new ShipCoordinates
+                {
+                    ShipFront = new Coordinate
+                    {
+                        Column = "A",
+                        Row = "1"
+                    },
+                    ShipBack = new Coordinate
+                    {
+                        Column = "E",
+                        Row = "1"
+                    }
+                }
             };
 
-            c.RowToIndex.Should().Be(expected);
+            Assert.Throws<Exception>(() => game.Initialize(ships));
         }
+
+
 
     }
 
