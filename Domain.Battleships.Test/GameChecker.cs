@@ -40,5 +40,10 @@ namespace Domain.Battleships.Test
         {
             return _fleet.Any(x => x.NotDestroyedPart.Contains(coordinate));
         }
+
+        public bool IsGameOver()
+        {
+            return _fleet.All(x => !x.NotDestroyedPart.Any());
+        }
     }
 }
