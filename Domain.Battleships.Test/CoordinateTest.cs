@@ -5,28 +5,20 @@ namespace Domain.Battleships.Test
 {
     public class CoordinateTest
     {
-        [TestCase("A", 0)]
-        [TestCase("J", 9)]
+        [TestCase("1", 0)]
+        [TestCase("10", 9)]
         public void ShouldMapColumnLetterCoordinatesToIndex(string column, int expected)
         {
-            var c = new Coordinate
-            {
-                Column = column,
-                Row = "1"
-            };
+            var c = new Coordinate("A",column);
 
             c.ColumnToIndex.Should().Be(expected);
         }
 
-        [TestCase("1", 0)]
-        [TestCase("10", 9)]
+        [TestCase("A", 0)]
+        [TestCase("J", 9)]
         public void ShouldMapRowIntCoordinatesToIndex(string row, int expected)
         {
-            var c = new Coordinate
-            {
-                Column = "A",
-                Row = row
-            };
+            var c = new Coordinate(row, "1");
 
             c.RowToIndex.Should().Be(expected);
         }

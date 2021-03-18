@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -8,172 +8,66 @@ namespace Domain.Battleships.Test
     public class GameTest
     {
         [Test]
-        public void ShouldInitializeGameWithOne5FlagShipVertical()
+        public void ShouldReturnStatusHitForFieldWithShip()
         {
-            Game game = new Game();
-
-            List<ShipCoordinates> ships = new List<ShipCoordinates>
+            var map = new List<Ship>
             {
-                new ShipCoordinates
+                new Ship
                 {
-                    ShipFront = new Coordinate
-                    {
-                        Column = "A",
-                        Row = "1"
-                    },
-                    ShipBack = new Coordinate
-                    {
-                        Column = "A",
-                        Row = "5"
-                    }
+                    ShipFront = new Coordinate("A","1"),
+                    ShipBack = new Coordinate("A","5")
                 }
             };
 
-            game.Initialize(ships);
-
-            game.IsShip(0, 1).Should().BeFalse();
-            game.IsShip(4, 0).Should().BeTrue();
-        }
-        
-        [Test]
-        public void ShouldInitializeGameWithOne5FlagShipHorizontal()
-        {
-            Game game = new Game();
-
-            List<ShipCoordinates> ships = new List<ShipCoordinates>
-            {
-                new ShipCoordinates
-                {
-                    ShipFront = new Coordinate
-                    {
-                        Column = "A",
-                        Row = "1"
-                    },
-                    ShipBack = new Coordinate
-                    {
-                        Column = "E",
-                        Row = "1"
-                    }
-                }
-            };
-
-            game.Initialize(ships);
-
-            game.IsShip(0, 1).Should().BeTrue();
-            game.IsShip(4, 0).Should().BeFalse();
-        }
-
-        [Test]
-        public void ShouldThrowExceptionForDiagonalShip()
-        {
-            Game game = new Game();
-
-            List<ShipCoordinates> ships = new List<ShipCoordinates>
-            {
-                new ShipCoordinates
-                {
-                    ShipFront = new Coordinate
-                    {
-                        Column = "A",
-                        Row = "1"
-                    },
-                    ShipBack = new Coordinate
-                    {
-                        Column = "E",
-                        Row = "3"
-                    }
-                }
-            };
-
-            Assert.Throws<Exception>(() => game.Initialize(ships));
+            var g = new Game(map);
+            var c = new Coordinate("A","1");
+            g.Play(c, Player.One).Should().Be(Status.Hit);
         }
 
 
         [Test]
-        public void ShouldThrowExceptionForOverlapingShips()
+        public void ShouldReturnStatusMissForFieldWithoutShip()
         {
-            Game game = new Game();
-
-            List<ShipCoordinates> ships = new List<ShipCoordinates>
+            var map1 = new List<Ship>
             {
-                new ShipCoordinates
+                new Ship
                 {
-                    ShipFront = new Coordinate
-                    {
-                        Column = "A",
-                        Row = "1"
-                    },
-                    ShipBack = new Coordinate
-                    {
-                        Column = "E",
-                        Row = "1"
-                    }
-                },
-                new ShipCoordinates
-                {
-                    ShipFront = new Coordinate
-                    {
-                        Column = "A",
-                        Row = "1"
-                    },
-                    ShipBack = new Coordinate
-                    {
-                        Column = "E",
-                        Row = "1"
-                    }
-                }
+                    ShipFront = new Coordinate("A", "1"),
+                    ShipBack = new Coordinate("A","5")                }
             };
 
-            Assert.Throws<Exception>(() => game.Initialize(ships));
+            var g = new Game(map1);
+            var c = new Coordinate("B", "1");
+            g.Play(c, Player.One).Should().Be(Status.Miss);
         }
-
-        [Test]
-        public void ShouldAllowForNonOverlapingShips()
-        {
-            Game game = new Game();
-
-            List<ShipCoordinates> ships = new List<ShipCoordinates>
-            {
-                new ShipCoordinates
-                {
-                    ShipFront = new Coordinate
-                    {
-                        Column = "A",
-                        Row = "1"
-                    },
-                    ShipBack = new Coordinate
-                    {
-                        Column = "E",
-                        Row = "1"
-                    }
-                },
-                new ShipCoordinates
-                {
-                    ShipFront = new Coordinate
-                    {
-                        Column = "A",
-                        Row = "1"
-                    },
-                    ShipBack = new Coordinate
-                    {
-                        Column = "E",
-                        Row = "1"
-                    }
-                }
-            };
-
-            Assert.Throws<Exception>(() => game.Initialize(ships));
-        }
-
-
-
     }
 
-    internal enum Status
+    public enum Player
     {
-        blank,
-        hit,
-        miss,
-        shipHasSunk
+        One
+    }
+
+    public class Game
+    {
+        private readonly List<Ship> _map;
+
+        public Game(List<Ship> map)
+        {
+            _map = map;
+        }
+
+
+        public Status Play(Coordinate coordinate, Player one)
+        {
+            if (IsAShip(coordinate))
+                return Status.Hit;
+
+            return Status.Miss;
+        }
+
+        private bool IsAShip(Coordinate coordinate)
+        {
+            return _map.Any(x => x.NotDestroyedPart.Contains(coordinate));
+        }
     }
 }

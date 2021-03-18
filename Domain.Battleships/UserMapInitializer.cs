@@ -3,12 +3,17 @@ using System.Collections.Generic;
 
 namespace Domain.Battleships
 {
-    public class Game
+    public interface IUserMapInitializer
+    {
+        bool[,] Initialize(List<Ship> ships);
+    }
+
+    public class UserMapInitializer : IUserMapInitializer
     {
         private const int BoardSize = 10;
-        private readonly bool[,] _board = new bool[BoardSize, BoardSize];
-        public void Initialize(List<ShipCoordinates> ships)
+        public bool[,] Initialize(List<Ship> ships)
         {
+            bool[,] _board = new bool[BoardSize, BoardSize];
             foreach (var ship in ships)
             {
                 for (var rowIndex = 0; rowIndex < BoardSize; rowIndex++)
@@ -26,9 +31,11 @@ namespace Domain.Battleships
                     Console.WriteLine();
                 }
             }
+
+            return _board;
         }
 
-        private bool IsShipWithinCoordinates(ShipCoordinates ship, int rowIndex, int columnIndex)
+        private bool IsShipWithinCoordinates(Ship ship, int rowIndex, int columnIndex)
         {
             if (IsShipHorizontal(ship))
             {
@@ -66,19 +73,14 @@ namespace Domain.Battleships
             return columnIndex != shipFrontColumnToIndex;
         }
 
-        private static bool IsShipHorizontal(ShipCoordinates ship)
+        private static bool IsShipHorizontal(Ship ship)
         {
             return ship.ShipFront.RowToIndex == ship.ShipBack.RowToIndex;
         }
 
-        private static bool IsShipVertical(ShipCoordinates ship)
+        private static bool IsShipVertical(Ship ship)
         {
             return ship.ShipFront.ColumnToIndex == ship.ShipBack.ColumnToIndex;
-        }
-
-        public bool IsShip(int row, int column)
-        {
-            return _board[row,column];
         }
     }
 }
