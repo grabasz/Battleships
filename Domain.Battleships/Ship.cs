@@ -17,6 +17,7 @@ namespace Domain.Battleships
                     _notDestroyedPart = GetAllPoints();
                 return _notDestroyedPart;
             }
+            set { _notDestroyedPart = value; }
         }
 
         public IEnumerable<Coordinate> GetAllPoints()
