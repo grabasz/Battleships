@@ -1,5 +1,7 @@
 export enum StatusEnum {
   blank,
-  ship,
-  sink
+  miss,
+  hit,
+  sink,
+  ship
 }

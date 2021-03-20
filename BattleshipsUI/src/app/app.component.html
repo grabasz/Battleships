@@ -13,7 +13,7 @@
       </section>
 
       <app-waiting></app-waiting>
-      <mat-button-toggle-group (change)="onInsertionShipModeChange()" [(ngModel)]="isVerticalShip">
+      <mat-button-toggle-group (change)="onInsertionShipModeChange()" [(ngModel)]="_insertionService.isVertical">
         <mat-button-toggle [value]="true">Vertical</mat-button-toggle>
         <mat-button-toggle [value]="false">Horizontal</mat-button-toggle>
       </mat-button-toggle-group>
@@ -21,7 +21,7 @@
         <div
           class="column has-text-centered"
           *ngFor="
-            let board of _game.GetBords(boardIndex);
+            let board of _game.GetBords();
             let boardIndex = index
           "
         >
@@ -37,12 +37,12 @@
               <td
                 *ngFor="let col of row; let columnIndex = index"
                 (click)="fire(col)"
-                [style.background-color]="
-                  col.wasDiscovered ? '' : 'transparent'
-                "
+                (mouseenter)="onMouseEnter(rowIndex,columnIndex)"
+                [class.insertion]="col.isInsertedShip"
                 [class.win]="col.value == StatusEnum.ship"
-                [class.fail]="col.value == StatusEnum.blank"
+                [class.fail]="col.value == StatusEnum.miss"
                 [class.sink]="col.value == StatusEnum.sink"
+                [class.blank]="!col.isInsertedShip && col.value == StatusEnum.blank"
                 class="battleship-tile"
               >
                 {{ this.getCellValue(col) }}

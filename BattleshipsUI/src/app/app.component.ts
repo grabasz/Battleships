@@ -1,3 +1,4 @@
+import { InsertionService } from "./insertion.service";
 import { StatusEnum } from "./status-enum.enum";
 import { GameService } from "./game.service";
 import { BoardService } from "./board.service";
@@ -14,13 +15,18 @@ export class AppComponent {
   title = "BattleshipsUI";
   success = false;
   statusMap = {
-    0: "X",
-    1: "🔥",
-    2: "💀",
+    0: "🌊",
+    1: "X",
+    2: "🔥",
+    3: "💀",
+    4: "🚢",
   };
 
   isVerticalShip: boolean = true;
-  constructor(private _board: BoardService, private _game: GameService) {}
+  constructor(
+    private _game: GameService,
+    private _insertionService: InsertionService
+  ) {}
   StatusEnum: typeof StatusEnum = StatusEnum;
 
   fire(status: Status) {
@@ -32,17 +38,27 @@ export class AppComponent {
   }
 
   getCellValue(status: Status): string {
-    if (status.wasDiscovered) {
+    if (status.wasDiscovered || status.value == StatusEnum.ship) {
       return this.statusMap[status.value];
     }
+    if(status.isInsertedShip)
+      return "🚢"
     return "🌊";
   }
 
-  isOpacityTurnedOn(board: Board){
-    return !this._game.isSetupGameMode() && (board.isMyBoard || !this._game.isMyTurn());
+  isOpacityTurnedOn(board: Board) {
+    return (
+      !this._game.isSetupGameMode() &&
+      (board.isMyBoard || !this._game.isMyTurn())
+    );
   }
 
-  onInsertionShipModeChange(){
-    console.log(this.isVerticalShip);
+  onInsertionShipModeChange() {
+    // console.log(this.isVerticalShip);
+  }
+
+  onMouseEnter(rowIndex: number, columnIndex: number) {
+    this._insertionService.showShip(rowIndex, columnIndex);
+    console.log(rowIndex, columnIndex);
   }
 }
