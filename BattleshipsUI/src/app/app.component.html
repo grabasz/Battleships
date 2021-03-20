@@ -14,7 +14,6 @@
 
       <app-waiting></app-waiting>
 
-      <!-- loops through the boards array and displays the player and board tiles -->
       <div class="columns">
         <div
           class="column has-text-centered"
@@ -29,7 +28,7 @@
           </h5>
           <table
             class="is-bordered"
-            [style.opacity]="board.isMyBoard ? 0.5 : 1"
+            [style.opacity]="isOpacityTurnedOn(board) ? 0.6 : 1"
           >
             <tr *ngFor="let row of board.tiles; let rowIndex = index">
               <td
@@ -51,10 +50,15 @@
       </div>
 
       <div class="has-text-centered">
-        <span class="tag is-warning" *ngIf="_game.isMyTurn()">Your turn!</span>
-        <span class="tag is-danger" *ngIf="!_game.isMyTurn()"
-          >Other player's turn.</span
-        >
+        <span class="tag is-success" *ngIf="_game.isSetupGameMode()">Setup Mode</span>
+        <ng-container *ngIf="!_game.isSetupGameMode()">
+          <span class="tag is-warning" *ngIf="_game.isMyTurn()"
+            >Your turn!</span
+          >
+          <span class="tag is-danger" *ngIf="!_game.isMyTurn()"
+            >Other player's turn.</span
+          >
+        </ng-container>
       </div>
     </div>
   </div>

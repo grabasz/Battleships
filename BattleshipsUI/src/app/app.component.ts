@@ -3,6 +3,7 @@ import { GameService } from "./game.service";
 import { BoardService } from "./board.service";
 import { Component } from "@angular/core";
 import { Status } from "./status";
+import { Board } from "./board";
 
 @Component({
   selector: "app-root",
@@ -32,8 +33,11 @@ export class AppComponent {
   getCellValue(status: Status): string {
     if (status.wasDiscovered) {
       return this.statusMap[status.value];
-      // return  === StatusEnum.blank ? "X" : "🔥";
     }
     return "🌊";
+  }
+
+  isOpacityTurnedOn(board: Board){
+    return !this._game.isSetupGameMode() && (board.isMyBoard || !this._game.isMyTurn());
   }
 }

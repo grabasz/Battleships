@@ -17,6 +17,10 @@ export class GameService {
     return false;
   }
 
+  isSetupGameMode(){
+    return true;
+  }
+
   getGameId() {
     return 1;
   }
@@ -30,10 +34,16 @@ export class GameService {
   }
 
   GetBords(): Board[] {
+    if(this.isSetupGameMode()) {
+      return [this.myBoard];
+    }
+
     return [this.myBoard, this.opponentBoard];
   }
 
   isMyTurn() {
     return true;
   }
+
+
 }
