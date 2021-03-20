@@ -30,7 +30,7 @@ export class AppComponent {
   StatusEnum: typeof StatusEnum = StatusEnum;
 
   onClick(status: Status, rowIndex: number, columnIndex: number) {
-    if (this._game.isSetupGameMode()) {
+    if (this._insertionService.isInsertionMode) {
       this._insertionService.insertShip(rowIndex, columnIndex);
       status.value = StatusEnum.ship;
     }
@@ -51,7 +51,7 @@ export class AppComponent {
 
   isOpacityTurnedOn(board: Board) {
     return (
-      !this._game.isSetupGameMode() &&
+      !this._insertionService.isInsertionMode &&
       (board.isMyBoard || !this._game.isMyTurn())
     );
   }

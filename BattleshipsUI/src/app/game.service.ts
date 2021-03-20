@@ -1,3 +1,5 @@
+import { BoardService } from './board.service';
+import { InsertionService } from './insertion.service';
 import { Injectable } from "@angular/core";
 import { Board } from "./board";
 
@@ -5,9 +7,10 @@ import { Board } from "./board";
   providedIn: "root",
 })
 export class GameService {
-  myBoard: Board = new Board(true);
-  opponentBoard: Board = new Board(false);
-  constructor() {}
+
+  constructor(private _insertionService: InsertionService, private _board: BoardService) {
+
+  }
 
   isAllPlayersReady(): boolean {
     return true;
@@ -15,10 +18,6 @@ export class GameService {
 
   isWon(): boolean {
     return false;
-  }
-
-  isSetupGameMode(){
-    return true;
   }
 
   getGameId() {
@@ -33,17 +32,18 @@ export class GameService {
     return location.port ? ":" + location.port : "";
   }
 
-  GetBords(): Board[] {
-    if(this.isSetupGameMode()) {
-      return [this.myBoard];
-    }
-
-    return [this.myBoard, this.opponentBoard];
-  }
-
   isMyTurn() {
     return true;
   }
 
+  GetBords(): Board[] {
+    if(this.isInsertionGameMode()) {
+      return [this._board.myBoard];
+    }
 
+    return [this._board.myBoard, this._board.opponentBoard];
+  }
+  isInsertionGameMode(): boolean{
+    return this._insertionService.isInsertionMode;
+  }
 }
