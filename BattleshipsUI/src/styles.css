@@ -1,1 +1,18 @@
-/* You can add global styles to this file, and also import other style files */
+.container {
+  padding: 50px;
+}
+.battleship-tile {
+  color: black;
+}
+.win {
+  background-color: #23d160;
+  color: #fff;
+}
+.sink {
+  background-color: #5f5f5f;
+  color: #fff;
+}
+.fail {
+  background-color: #ff3860;
+  color: #fff;
+}

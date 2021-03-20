@@ -1,0 +1,9 @@
+<div *ngIf="!_game.isAllPlayersReady()">
+  <h2>Waiting for 2nd user to join...</h2>
+  <h3 class="subtitle is-6">
+    You can invite them with this link: {{ _game.getGameUrl() }}?id={{ _game.getGameId() }}. You
+    can also open
+    <a href="{{ _game.getGameUrl() }}?id={{ _game.getGameId() }}" target="_blank">this link</a>
+    in a new browser, to play all by yourself.
+  </h3>
+</div>
