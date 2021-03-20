@@ -19,6 +19,7 @@ export class AppComponent {
     2: "💀",
   };
 
+  isVerticalShip: boolean = true;
   constructor(private _board: BoardService, private _game: GameService) {}
   StatusEnum: typeof StatusEnum = StatusEnum;
 
@@ -39,5 +40,9 @@ export class AppComponent {
 
   isOpacityTurnedOn(board: Board){
     return !this._game.isSetupGameMode() && (board.isMyBoard || !this._game.isMyTurn());
+  }
+
+  onInsertionShipModeChange(){
+    console.log(this.isVerticalShip);
   }
 }

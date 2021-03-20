@@ -13,7 +13,10 @@
       </section>
 
       <app-waiting></app-waiting>
-
+      <mat-button-toggle-group (change)="onInsertionShipModeChange()" [(ngModel)]="isVerticalShip">
+        <mat-button-toggle [value]="true">Vertical</mat-button-toggle>
+        <mat-button-toggle [value]="false">Horizontal</mat-button-toggle>
+      </mat-button-toggle-group>
       <div class="columns">
         <div
           class="column has-text-centered"
@@ -50,7 +53,9 @@
       </div>
 
       <div class="has-text-centered">
-        <span class="tag is-success" *ngIf="_game.isSetupGameMode()">Setup Mode</span>
+        <span class="tag is-success" *ngIf="_game.isSetupGameMode()"
+          >Setup Mode</span
+        >
         <ng-container *ngIf="!_game.isSetupGameMode()">
           <span class="tag is-warning" *ngIf="_game.isMyTurn()"
             >Your turn!</span
