@@ -1,6 +1,4 @@
 import { BoardService } from './board.service';
-import { Board } from './board';
-import { GameService } from "./game.service";
 import { Injectable } from "@angular/core";
 import { StatusEnum } from "./status-enum.enum";
 import { Status } from "./status";
@@ -10,26 +8,34 @@ import { ShipsProviderService } from "./ships-provider.service";
   providedIn: "root",
 })
 export class InsertionService {
+  awaitConfirmation: boolean;
+  isVertical = true;
+  shipSize: number;
+  islastValueEmitted: boolean;
+  isInsertionMode: boolean = true;
+
   constructor(
     private _boardService: BoardService,
     private shipProvider: ShipsProviderService
   ) {
-    shipProvider.asyncShipSize.subscribe(
+    this.subscribeForShipSizeQueue();
+  }
+
+
+  subscribeForShipSizeQueue() {
+    this.shipProvider.asyncShipSize.subscribe(
       (x) => (this.shipSize = x[0]),
       null,
-      () => (this.isInsertionMode = false)
+      () => (this.islastValueEmitted = true)
     );
-    shipProvider.listener.next();
+    this.shipProvider.nextShipSizeTrigger.next();
   }
-  isVertical = true;
-  shipSize: number;
-  isInsertionMode: boolean = true;
 
   showShip(selectedRowIndex: number, selectedColumnIndex: number) {
     const tiles = this._boardService.myBoard.tiles;
     this.resetPreview(tiles);
     if (this.isVertical) {
-      this.insertVerticalShip(selectedRowIndex, selectedColumnIndex).forEach(
+      this.getVerticalShip(selectedRowIndex, selectedColumnIndex).forEach(
         (x) => (x.isInsertedShip = true)
       );
     } else {
@@ -39,7 +45,7 @@ export class InsertionService {
     }
   }
 
-  private insertVerticalShip(
+  private getVerticalShip(
     selectedRowIndex: number,
     selectedColumnIndex: number
   ) {
@@ -85,7 +91,7 @@ export class InsertionService {
 
   insertShip(selectedRowIndex: number, selectedColumnIndex: number) {
     if (this.isVertical) {
-      this.insertVerticalShip(selectedRowIndex, selectedColumnIndex).forEach(
+      this.getVerticalShip(selectedRowIndex, selectedColumnIndex).forEach(
         (x) => (x.value = StatusEnum.ship)
       );
     } else {
@@ -93,10 +99,14 @@ export class InsertionService {
         (x) => (x.value = StatusEnum.ship)
       );
     }
-    this.shipProvider.listener.next();
+
+    if(this.islastValueEmitted) {
+    this.awaitConfirmation = true;
+    }
+    this.shipProvider.nextShipSizeTrigger.next();
   }
 
-  private resetPreview(tiles: Status[][]) {
+  resetPreview(tiles: Status[][]) {
     tiles.forEach((row) => {
       row.forEach((column) => (column.isInsertedShip = false));
     });

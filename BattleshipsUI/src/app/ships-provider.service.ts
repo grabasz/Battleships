@@ -6,9 +6,18 @@ import { BehaviorSubject, from, merge, Observable, Subject, zip } from 'rxjs';
 })
 export class ShipsProviderService {
   asyncShipSize: Observable<[number, void]>;
-  listener: Subject<void> = new Subject<void>();
+  nextShipSizeTrigger: Subject<void>;
   constructor() {
-    const o =from([5,4,4]);
-    this.asyncShipSize = zip(o, this.listener);
+    this.setUpShipSizeQueue();
+  }
+
+  private setUpShipSizeQueue() {
+    this.nextShipSizeTrigger  = new Subject<void>();
+    const o = from([5, 4, 4]);
+    this.asyncShipSize = zip(o, this.nextShipSizeTrigger);
+  }
+
+  reset() {
+    this.setUpShipSizeQueue();
   }
 }

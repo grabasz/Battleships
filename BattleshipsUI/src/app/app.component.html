@@ -17,6 +17,9 @@
         <mat-button-toggle [value]="true">Vertical</mat-button-toggle>
         <mat-button-toggle [value]="false">Horizontal</mat-button-toggle>
       </mat-button-toggle-group>
+      <button mat-raised-button color="warn" (click)="onResetClick()">Reset</button>
+      <button mat-raised-button color="primary" (click)="onConfirmClick()" *ngIf="_insertionService.awaitConfirmation">Confirm</button>
+
       <div class="columns">
         <div
           class="column has-text-centered"

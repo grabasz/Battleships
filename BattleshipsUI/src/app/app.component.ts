@@ -25,7 +25,8 @@ export class AppComponent {
   isVerticalShip: boolean = true;
   constructor(
     private _game: GameService,
-    private _insertionService: InsertionService
+    private _insertionService: InsertionService,
+    private _boardService: BoardService
   ) {}
   StatusEnum: typeof StatusEnum = StatusEnum;
 
@@ -62,5 +63,10 @@ export class AppComponent {
 
   onMouseEnter(rowIndex: number, columnIndex: number) {
     this._insertionService.showShip(rowIndex, columnIndex);
+  }
+
+  onResetClick() {
+    this._boardService.resetMyBoard();
+    this._insertionService.subscribeForShipSizeQueue();
   }
 }
