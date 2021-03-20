@@ -29,7 +29,11 @@ export class AppComponent {
   ) {}
   StatusEnum: typeof StatusEnum = StatusEnum;
 
-  fire(status: Status) {
+  onClick(status: Status, rowIndex: number, columnIndex: number) {
+    if (this._game.isSetupGameMode()) {
+      this._insertionService.insertShip(rowIndex, columnIndex);
+      status.value = StatusEnum.ship;
+    }
     if (this._game.isMyTurn()) {
       status.wasDiscovered = true;
     }
@@ -41,8 +45,7 @@ export class AppComponent {
     if (status.wasDiscovered || status.value == StatusEnum.ship) {
       return this.statusMap[status.value];
     }
-    if(status.isInsertedShip)
-      return "🚢"
+    if (status.isInsertedShip) return "🚢";
     return "🌊";
   }
 
@@ -59,6 +62,5 @@ export class AppComponent {
 
   onMouseEnter(rowIndex: number, columnIndex: number) {
     this._insertionService.showShip(rowIndex, columnIndex);
-    console.log(rowIndex, columnIndex);
   }
 }

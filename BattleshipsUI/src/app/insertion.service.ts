@@ -1,7 +1,7 @@
 import { GameService } from "./game.service";
 import { Injectable } from "@angular/core";
 import { StatusEnum } from "./status-enum.enum";
-import { Board } from "./board";
+import { Status } from "./status";
 
 @Injectable({
   providedIn: "root",
@@ -9,24 +9,80 @@ import { Board } from "./board";
 export class InsertionService {
   constructor(private _game: GameService) {}
   isVertical = true;
-  showShip(rowIndex: number, columnIndex: number) {
-    const myBoard = this._game.myBoard;
-    this.resetPreview(myBoard);
+  shipSize = 5;
 
-    myBoard.tiles.forEach((row, rIndex) => {
-      row.forEach((column, cIndex) => {
-        if (this.isVertical && columnIndex == cIndex) {
-          column.isInsertedShip = true;
-        }
-        if (!this.isVertical && rowIndex == rIndex) {
-          column.isInsertedShip = true;
-        }
-      });
-    });
+  showShip(selectedRowIndex: number, selectedColumnIndex: number) {
+    const tiles = this._game.myBoard.tiles;
+    this.resetPreview(tiles);
+    if (this.isVertical) {
+      this.insertVerticalShip(selectedRowIndex, selectedColumnIndex).forEach(
+        (x) => (x.isInsertedShip = true)
+      );
+    } else {
+      this.getHorizontalShip(selectedRowIndex, selectedColumnIndex).forEach(
+        (x) => (x.isInsertedShip = true)
+      );
+    }
   }
 
-  private resetPreview(myBoard: Board) {
-    myBoard.tiles.forEach((row) => {
+  private insertVerticalShip(
+    selectedRowIndex: number,
+    selectedColumnIndex: number
+  ) {
+    const tiles = this._game.myBoard.tiles;
+    const verticalShip: Status[] = [];
+    if (selectedRowIndex + this.shipSize <= 10) {
+      for (
+        let row = selectedRowIndex;
+        row < selectedRowIndex + this.shipSize;
+        row++
+      ) {
+        const status = tiles[row][selectedColumnIndex];
+        if(status.value === StatusEnum.ship) {
+          return [];
+        }
+        verticalShip.push(status);
+      }
+    }
+    return verticalShip;
+  }
+
+  private getHorizontalShip(
+    selectedRowIndex: number,
+    selectedColumnIndex: number
+  ) {
+    const tiles = this._game.myBoard.tiles;
+    const horizontalShip: Status[] = [];
+    if (selectedColumnIndex + this.shipSize <= 10) {
+      for (
+        let column = selectedColumnIndex;
+        column < selectedColumnIndex + this.shipSize;
+        column++
+      ) {
+        const status = tiles[selectedRowIndex][column];
+        if(status.value === StatusEnum.ship) {
+          return [];
+        }
+        horizontalShip.push(status);
+      }
+    }
+    return horizontalShip;
+  }
+
+  insertShip(selectedRowIndex: number, selectedColumnIndex: number) {
+    if (this.isVertical) {
+      this.insertVerticalShip(selectedRowIndex, selectedColumnIndex).forEach(
+        (x) => (x.value = StatusEnum.ship)
+      );
+    } else {
+      this.getHorizontalShip(selectedRowIndex, selectedColumnIndex).forEach(
+        (x) => (x.value = StatusEnum.ship)
+      );
+    }
+  }
+
+  private resetPreview(tiles: Status[][]) {
+    tiles.forEach((row) => {
       row.forEach((column) => (column.isInsertedShip = false));
     });
   }

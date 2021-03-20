@@ -36,7 +36,7 @@
             <tr *ngFor="let row of board.tiles; let rowIndex = index">
               <td
                 *ngFor="let col of row; let columnIndex = index"
-                (click)="fire(col)"
+                (click)="onClick(col,rowIndex,columnIndex)"
                 (mouseenter)="onMouseEnter(rowIndex,columnIndex)"
                 [class.insertion]="col.isInsertedShip"
                 [class.win]="col.value == StatusEnum.ship"
