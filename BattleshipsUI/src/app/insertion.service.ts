@@ -3,26 +3,29 @@ import { Injectable } from "@angular/core";
 import { StatusEnum } from "./status-enum.enum";
 import { Status } from "./status";
 import { ShipsProviderService } from "./ships-provider.service";
+import { SignalRService } from "./signal-r.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class InsertionService {
-
   awaitConfirmation: boolean;
   isVertical = true;
   shipSize: number;
   islastValueEmitted: boolean;
   isInsertionMode: boolean = true;
+  insertedShips: string[][];
 
   constructor(
     private _boardService: BoardService,
-    private shipProvider: ShipsProviderService
+    private shipProvider: ShipsProviderService,
+    private _signalRService: SignalRService
   ) {
     this.resetInsertion();
   }
 
   resetInsertion() {
+    this.insertedShips = [];
     this.awaitConfirmation = false;
     this.islastValueEmitted = false;
     this.shipProvider.asyncShipSize.subscribe(
@@ -38,11 +41,11 @@ export class InsertionService {
     this.resetPreview(tiles);
     if (this.isVertical) {
       this.getVerticalShip(selectedRowIndex, selectedColumnIndex).forEach(
-        (x) => (x.isInsertedShip = true)
+        (x) => (x.isInsertionPreview = true)
       );
     } else {
       this.getHorizontalShip(selectedRowIndex, selectedColumnIndex).forEach(
-        (x) => (x.isInsertedShip = true)
+        (x) => (x.isInsertionPreview = true)
       );
     }
   }
@@ -97,10 +100,17 @@ export class InsertionService {
   }
 
   insertShip(selectedRowIndex: number, selectedColumnIndex: number) {
-    const fields = this.getFieldsForChange(selectedRowIndex, selectedColumnIndex);
+    const fields = this.getFieldsForChange(
+      selectedRowIndex,
+      selectedColumnIndex
+    );
     fields.forEach((x) => (x.value = StatusEnum.ship));
-
-    if(!fields.length) {
+    const lastField = fields[fields.length - 1];
+    this.insertedShips.push([
+      this.convertToString(selectedRowIndex, selectedColumnIndex),
+      this.convertToString(lastField.row, lastField.column),
+    ]);
+    if (!fields.length) {
       return;
     }
 
@@ -110,6 +120,12 @@ export class InsertionService {
       this.resetPreview(tiles);
     }
     this.shipProvider.nextShipSizeTrigger.next();
+  }
+
+  private convertToString(row: number, column: number): string {
+    const columnNumber = column + 1;
+    const rowLetter = String.fromCharCode(row + 65);
+    return `${rowLetter}${columnNumber}`;
   }
 
   private getFieldsForChange(
@@ -125,11 +141,11 @@ export class InsertionService {
 
   resetPreview(tiles: Status[][]) {
     tiles.forEach((row) => {
-      row.forEach((column) => (column.isInsertedShip = false));
+      row.forEach((column) => (column.isInsertionPreview = false));
     });
   }
 
   sendShips() {
-
+    this._signalRService.sendData(this.insertedShips);
   }
 }

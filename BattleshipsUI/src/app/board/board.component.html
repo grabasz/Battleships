@@ -1,3 +1,29 @@
-<p>
-  board works!
-</p>
+<h5>
+  <span class="tag is-info" *ngIf="board.isMyBoard">You</span>
+  <span class="tag is-info" *ngIf="!board.isMyBoard">Opponent</span>
+</h5>
+<table
+  class="is-bordered"
+  [style.opacity]="isOpacityTurnedOn(board) ? 0.6 : 1"
+>
+  <tr>
+    <td></td>
+    <th *ngFor="let item of [].constructor(10); let i = index">{{i + 1}}</th>
+  </tr>
+  <tr *ngFor="let row of board.tiles; let rowIndex = index">
+    <th>{{headerNumberToLetter(rowIndex)}}</th>
+    <td
+      *ngFor="let col of row; let columnIndex = index"
+      (click)="onClick(col,rowIndex,columnIndex)"
+      (mouseenter)="onMouseEnter(rowIndex,columnIndex)"
+      [class.insertion]="col.isInsertionPreview"
+      [class.win]="col.value == StatusEnum.ship"
+      [class.fail]="col.value == StatusEnum.miss"
+      [class.sink]="col.value == StatusEnum.sink"
+      [class.blank]="!col.isInsertionPreview && col.value == StatusEnum.blank"
+      class="battleship-tile"
+    >
+      {{ this.getCellValue(col) }}
+    </td>
+  </tr>
+</table>

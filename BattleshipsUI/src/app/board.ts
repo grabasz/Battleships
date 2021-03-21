@@ -13,9 +13,11 @@ export class Board {
       const row: Status[] = new Array<Status>();
       for (let j = 0; j < 10; j++) {
         row.push({
+          row: i,
+          column: j,
           value: StatusEnum.blank,
           wasDiscovered: false,
-          isInsertedShip: false
+          isInsertionPreview: false,
         });
       }
       this.tiles.push(row);

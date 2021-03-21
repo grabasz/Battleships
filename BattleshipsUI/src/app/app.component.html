@@ -13,7 +13,7 @@
       </section>
 
       <app-waiting></app-waiting>
-      <mat-button-toggle-group *ngIf="_insertionService.isInsertionMode" (change)="onInsertionShipModeChange()" [(ngModel)]="_insertionService.isVertical">
+      <mat-button-toggle-group *ngIf="_insertionService.isInsertionMode" [(ngModel)]="_insertionService.isVertical">
         <mat-button-toggle [value]="true">Vertical</mat-button-toggle>
         <mat-button-toggle [value]="false">Horizontal</mat-button-toggle>
       </mat-button-toggle-group>
@@ -28,30 +28,8 @@
             let boardIndex = index
           "
         >
-          <h5>
-            <span class="tag is-info" *ngIf="board.isMyBoard">You</span>
-            <span class="tag is-info" *ngIf="!board.isMyBoard">Opponent</span>
-          </h5>
-          <table
-            class="is-bordered"
-            [style.opacity]="isOpacityTurnedOn(board) ? 0.6 : 1"
-          >
-            <tr *ngFor="let row of board.tiles; let rowIndex = index">
-              <td
-                *ngFor="let col of row; let columnIndex = index"
-                (click)="onClick(col,rowIndex,columnIndex)"
-                (mouseenter)="onMouseEnter(rowIndex,columnIndex)"
-                [class.insertion]="col.isInsertedShip"
-                [class.win]="col.value == StatusEnum.ship"
-                [class.fail]="col.value == StatusEnum.miss"
-                [class.sink]="col.value == StatusEnum.sink"
-                [class.blank]="!col.isInsertedShip && col.value == StatusEnum.blank"
-                class="battleship-tile"
-              >
-                {{ this.getCellValue(col) }}
-              </td>
-            </tr>
-          </table>
+        <app-board
+        [board]="board"></app-board>
         </div>
       </div>
 

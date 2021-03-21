@@ -5,7 +5,9 @@ import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
   providedIn: "root",
 })
 export class SignalRService {
-  constructor() {}
+  constructor() {
+    this.startConnection();
+  }
 
   private hubConnection: HubConnection;
 
@@ -19,16 +21,13 @@ export class SignalRService {
       .catch((err) => console.log("Error while starting connection: " + err));
   }
 
-  public isOpponentReadyListener() {
-    this.hubConnection.on("gameReadyRequest", (user, message) => {
-      // this.data = data;
-      console.log(user, message);
-    });
+  public sendData(data: string[][]) {
+    this.hubConnection
+      .invoke("initGame", data)
+      .catch((err) => console.error(err));
   }
 
-  public sendData() {
-    this.hubConnection
-      .invoke("initGame", "test", "aaaaaaa")
-      .catch((err) => console.error(err));
+  public getConnection():HubConnection{
+    return this.hubConnection;
   }
 }
