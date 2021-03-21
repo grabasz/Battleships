@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 namespace Domain.Battleships
 {
     public class Coordinate
@@ -6,6 +8,19 @@ namespace Domain.Battleships
         {
             Row = row;
             Column = column;
+        }
+
+        public static Coordinate FromSingleString(string rowColumn)
+        {
+            var match = Regex.Match(rowColumn, @"(\w{1})(\d+)");
+
+            if (!match.Success)
+                return null;
+
+            var row = match.Groups[1].Value;
+            var column = match.Groups[2].Value;
+
+            return new Coordinate(row, column);
         }
 
         public string Row { get; set; }

@@ -95,5 +95,7 @@ namespace Domain.Battleships.Test
             g.Play(new Coordinate("A", "2"));
             g.IsGameOver().Should().BeFalse();
         }
+
+
     }
 }

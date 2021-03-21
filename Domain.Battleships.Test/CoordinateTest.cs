@@ -22,5 +22,15 @@ namespace Domain.Battleships.Test
 
             c.RowToIndex.Should().Be(expected);
         }
+
+        [Test]
+        public void ShouldCreateCoordinateFromSingleString()
+        {
+            var c = Coordinate.FromSingleString("A1");
+
+            c.Row.Should().Be("A");
+            c.Column.Should().Be("1");
+
+        }
     }
 }
