@@ -1,8 +1,9 @@
+import { SignalRService } from './signal-r.service';
 import { InsertionService } from "./insertion.service";
 import { StatusEnum } from "./status-enum.enum";
 import { GameService } from "./game.service";
 import { BoardService } from "./board.service";
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { Status } from "./status";
 import { Board } from "./board";
 
@@ -11,7 +12,7 @@ import { Board } from "./board";
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.css"],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = "BattleshipsUI";
   success = false;
   statusMap = {
@@ -22,13 +23,21 @@ export class AppComponent {
     4: "🚢",
   };
 
-  isVerticalShip: boolean = true;
+  isVerticalShip = true;
+
   constructor(
     private _game: GameService,
     private _insertionService: InsertionService,
-    private _boardService: BoardService
+    private _boardService: BoardService,
+    private _signalRService: SignalRService
   ) {}
   StatusEnum: typeof StatusEnum = StatusEnum;
+
+  ngOnInit() {
+    this._signalRService.startConnection();
+    this._signalRService.isOpponentReadyListener();
+
+  }
 
   onClick(status: Status, rowIndex: number, columnIndex: number) {
     if (this._insertionService.isInsertionMode && this.isInsertionActive()) {
@@ -71,5 +80,10 @@ export class AppComponent {
   onResetClick() {
     this._boardService.resetMyBoard();
     this._insertionService.resetInsertion();
+  }
+
+  onConfirmClick() {
+    this._signalRService.sendData();
+    this._insertionService.sendShips();
   }
 }

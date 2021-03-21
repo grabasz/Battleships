@@ -6,6 +6,7 @@ import { WaitingComponent } from './waiting/waiting.component';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { MatButtonModule } from '@angular/material';
     BrowserModule,
     FormsModule,
     MatButtonToggleModule,
-    MatButtonModule
+    MatButtonModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

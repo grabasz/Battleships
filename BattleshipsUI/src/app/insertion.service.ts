@@ -8,6 +8,7 @@ import { ShipsProviderService } from "./ships-provider.service";
   providedIn: "root",
 })
 export class InsertionService {
+
   awaitConfirmation: boolean;
   isVertical = true;
   shipSize: number;
@@ -126,5 +127,9 @@ export class InsertionService {
     tiles.forEach((row) => {
       row.forEach((column) => (column.isInsertedShip = false));
     });
+  }
+
+  sendShips() {
+
   }
 }
