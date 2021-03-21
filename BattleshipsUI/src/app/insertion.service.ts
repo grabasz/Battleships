@@ -1,4 +1,4 @@
-import { BoardService } from './board.service';
+import { BoardService } from "./board.service";
 import { Injectable } from "@angular/core";
 import { StatusEnum } from "./status-enum.enum";
 import { Status } from "./status";
@@ -18,11 +18,12 @@ export class InsertionService {
     private _boardService: BoardService,
     private shipProvider: ShipsProviderService
   ) {
-    this.subscribeForShipSizeQueue();
+    this.resetInsertion();
   }
 
-
-  subscribeForShipSizeQueue() {
+  resetInsertion() {
+    this.awaitConfirmation = false;
+    this.islastValueEmitted = false;
     this.shipProvider.asyncShipSize.subscribe(
       (x) => (this.shipSize = x[0]),
       null,
@@ -51,19 +52,21 @@ export class InsertionService {
   ) {
     const tiles = this._boardService.myBoard.tiles;
     const verticalShip: Status[] = [];
-    if (selectedRowIndex + this.shipSize <= 10) {
-      for (
-        let row = selectedRowIndex;
-        row < selectedRowIndex + this.shipSize;
-        row++
-      ) {
-        const status = tiles[row][selectedColumnIndex];
-        if (status.value === StatusEnum.ship) {
-          return [];
-        }
-        verticalShip.push(status);
-      }
+    if (selectedRowIndex + this.shipSize > 10) {
+      return [];
     }
+    for (
+      let row = selectedRowIndex;
+      row < selectedRowIndex + this.shipSize;
+      row++
+    ) {
+      const status = tiles[row][selectedColumnIndex];
+      if (status.value === StatusEnum.ship) {
+        return [];
+      }
+      verticalShip.push(status);
+    }
+
     return verticalShip;
   }
 
@@ -73,37 +76,50 @@ export class InsertionService {
   ) {
     const tiles = this._boardService.myBoard.tiles;
     const horizontalShip: Status[] = [];
-    if (selectedColumnIndex + this.shipSize <= 10) {
-      for (
-        let column = selectedColumnIndex;
-        column < selectedColumnIndex + this.shipSize;
-        column++
-      ) {
-        const status = tiles[selectedRowIndex][column];
-        if (status.value === StatusEnum.ship) {
-          return [];
-        }
-        horizontalShip.push(status);
-      }
+    if (selectedColumnIndex + this.shipSize > 10) {
+      return [];
     }
+
+    for (
+      let column = selectedColumnIndex;
+      column < selectedColumnIndex + this.shipSize;
+      column++
+    ) {
+      const status = tiles[selectedRowIndex][column];
+      if (status.value === StatusEnum.ship) {
+        return [];
+      }
+      horizontalShip.push(status);
+    }
+
     return horizontalShip;
   }
 
   insertShip(selectedRowIndex: number, selectedColumnIndex: number) {
-    if (this.isVertical) {
-      this.getVerticalShip(selectedRowIndex, selectedColumnIndex).forEach(
-        (x) => (x.value = StatusEnum.ship)
-      );
-    } else {
-      this.getHorizontalShip(selectedRowIndex, selectedColumnIndex).forEach(
-        (x) => (x.value = StatusEnum.ship)
-      );
+    const fields = this.getFieldsForChange(selectedRowIndex, selectedColumnIndex);
+    fields.forEach((x) => (x.value = StatusEnum.ship));
+
+    if(!fields.length) {
+      return;
     }
 
-    if(this.islastValueEmitted) {
-    this.awaitConfirmation = true;
+    if (this.islastValueEmitted) {
+      this.awaitConfirmation = true;
+      const tiles = this._boardService.myBoard.tiles;
+      this.resetPreview(tiles);
     }
     this.shipProvider.nextShipSizeTrigger.next();
+  }
+
+  private getFieldsForChange(
+    selectedRowIndex: number,
+    selectedColumnIndex: number
+  ): Status[] {
+    if (this.isVertical) {
+      return this.getVerticalShip(selectedRowIndex, selectedColumnIndex);
+    } else {
+      return this.getHorizontalShip(selectedRowIndex, selectedColumnIndex);
+    }
   }
 
   resetPreview(tiles: Status[][]) {

@@ -31,15 +31,12 @@ export class AppComponent {
   StatusEnum: typeof StatusEnum = StatusEnum;
 
   onClick(status: Status, rowIndex: number, columnIndex: number) {
-    if (this._insertionService.isInsertionMode) {
+    if (this._insertionService.isInsertionMode && this.isInsertionActive()) {
       this._insertionService.insertShip(rowIndex, columnIndex);
-      status.value = StatusEnum.ship;
     }
     if (this._game.isMyTurn()) {
       status.wasDiscovered = true;
     }
-
-    console.log(status);
   }
 
   getCellValue(status: Status): string {
@@ -62,11 +59,17 @@ export class AppComponent {
   }
 
   onMouseEnter(rowIndex: number, columnIndex: number) {
-    this._insertionService.showShip(rowIndex, columnIndex);
+    if (this.isInsertionActive()) {
+      this._insertionService.showShip(rowIndex, columnIndex);
+    }
+  }
+
+  private isInsertionActive() {
+    return !this._insertionService.awaitConfirmation;
   }
 
   onResetClick() {
     this._boardService.resetMyBoard();
-    this._insertionService.subscribeForShipSizeQueue();
+    this._insertionService.resetInsertion();
   }
 }
