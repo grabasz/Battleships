@@ -1,3 +1,4 @@
+import { SignalRService } from './signal-r.service';
 import { BoardService } from './board.service';
 import { InsertionService } from './insertion.service';
 import { Injectable } from "@angular/core";
@@ -7,9 +8,24 @@ import { Board } from "./board";
   providedIn: "root",
 })
 export class GameService {
+  gameId: number;
+  isGameWon: boolean;
 
-  constructor(private _insertionService: InsertionService, private _board: BoardService) {
+  constructor(private _insertionService: InsertionService, private _board: BoardService, private _signalR: SignalRService) {
+    this.gameReadyListener(_signalR);
+    this.gameWonListener(_signalR);
+  }
 
+  private gameReadyListener(_signalR: SignalRService) {
+    _signalR
+      .getConnection()
+      .on("gameReadyRequest", (gameId: number) => (this.gameId = gameId));
+  }
+
+  private gameWonListener(_signalR: SignalRService) {
+    _signalR
+      .getConnection()
+      .on("gameWon", (gameId: number) => (this.isGameWon = true));
   }
 
   isAllPlayersReady(): boolean {
@@ -17,11 +33,11 @@ export class GameService {
   }
 
   isWon(): boolean {
-    return false;
+    return this.isGameWon;
   }
 
   getGameId() {
-    return 1;
+    return this.gameId;
   }
 
   getGameUrl() {

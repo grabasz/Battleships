@@ -1,8 +1,7 @@
-namespace Domain.Battleships.Test
+namespace Domain.Battleships
 {
     public enum Status
     {
-//        blank,
         Hit,
         Miss,
         ShipHasSunk

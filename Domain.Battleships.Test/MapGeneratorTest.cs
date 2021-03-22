@@ -8,15 +8,6 @@ namespace Domain.Battleships.Test
     public class MapGeneratorTest
     {
         [Test]
-        public void ShouldCreate10x10Map()
-        {
-            MapGenerator mapGenerator = new MapGenerator(new RandomShipDataGenerator());
-            bool[,] map = mapGenerator.Generate(new List<int>());
-            map.GetLongLength(0).Should().Be(10);
-            map.GetLongLength(1).Should().Be(10);
-        }
-
-        [Test]
         [Repeat(100)]
         public void ShouldInitializeMapShip100TimesToVerifyIfRandomCanCauseTheError()
         {
@@ -27,8 +18,8 @@ namespace Domain.Battleships.Test
             4
         };
         MapGenerator mapGenerator = new MapGenerator(new RandomShipDataGenerator());
-            bool[,] map = mapGenerator.Generate(shipLengths);
-            map.Should().Contain(true);
+            var ships = mapGenerator.Generate(shipLengths);
+            ships.Should().HaveCount(3);
         }
 
         [Test]
@@ -45,10 +36,9 @@ namespace Domain.Battleships.Test
             shipDataGeneratorMock.Setup(m => m.GetConstantRowColumn()).Returns(0);
             shipDataGeneratorMock.Setup(m => m.GetIsVertical()).Returns(true);
 
-            bool[,] map = r.Generate(shipLengths);
-            map[0,0].Should().BeTrue();
-            map[4,0].Should().BeTrue();
-            map[5,0].Should().BeFalse();
+            var ships = r.Generate(shipLengths);
+            ships.Should().Contain(x => x.ShipFront.Row == "A" && x.ShipFront.Column == "1");
+            ships.Should().Contain(x => x.ShipBack.Row == "E" && x.ShipFront.Column == "1");
         }
 
         [Test]
@@ -65,30 +55,9 @@ namespace Domain.Battleships.Test
             shipDataGeneratorMock.Setup(m => m.GetConstantRowColumn()).Returns(0);
             shipDataGeneratorMock.Setup(m => m.GetIsVertical()).Returns(false);
 
-            bool[,] map = r.Generate(shipLengths);
-            map[0, 0].Should().BeTrue();
-            map[0, 4].Should().BeTrue();
-            map[0, 5].Should().BeFalse();
+            var ships = r.Generate(shipLengths);
+            ships.Should().Contain(x => x.ShipFront.Row == "A" && x.ShipFront.Column == "1");
+            ships.Should().Contain(x => x.ShipBack.Row == "A" && x.ShipBack.Column == "5");
         }
-    }
-
-    public interface IShipDataGenerator
-    {
-        int GetStartShipPoint(int shipSize);
-        int GetConstantRowColumn();
-        bool GetIsVertical();
-    }
-
-    public interface IMapGenerator
-    {
-        bool[,] Generate(List<int> shipLengths);
-    }
-
-    internal class BotShipLocation
-    {
-        public bool IsVertical { get; set; }
-        public int ConstantRowColumn { get; set; }
-        public int StartShepPoint { get; set; }
-        public int ShipSize { get; set; }
     }
 }

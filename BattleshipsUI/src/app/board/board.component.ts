@@ -1,3 +1,4 @@
+import { SignalRService } from './../signal-r.service';
 import { GameService } from "./../game.service";
 import { InsertionService } from "./../insertion.service";
 import { Component, Input, OnInit } from "@angular/core";
@@ -14,24 +15,43 @@ export class BoardComponent implements OnInit {
   @Input() board: Board;
   StatusEnum: typeof StatusEnum = StatusEnum;
   statusMap = {
-    0: "🌊",
+    0: "🔥",
     1: "X",
-    2: "🔥",
-    3: "💀",
-    4: "🚢",
+    2: "💀",
+    3: "🚢",
+    4: "🌊",
   };
   constructor(
     private _game: GameService,
-    private _insertionService: InsertionService
-  ) {}
+    private _insertionService: InsertionService,
+    private _signalR: SignalRService
+  ) {
 
-  ngOnInit() {}
+  }
+
+
+
+  ngOnInit() {
+    this.fieldStatusListener();
+  }
+
+  private fieldStatusListener() {
+    this._signalR
+      .getConnection()
+      .on("fieldStatus", (row: number, column: number,status: StatusEnum) => {
+        this.board.tiles[row][column].value = status;
+      });
+  }
+
   onClick(status: Status, rowIndex: number, columnIndex: number) {
     if (this._insertionService.isInsertionMode && this.isInsertionActive()) {
       this._insertionService.insertShip(rowIndex, columnIndex);
+      return;
     }
     if (this._game.isMyTurn()) {
       status.wasDiscovered = true;
+      console.log("Click");
+      this._signalR.play(this._game.getGameId(), rowIndex, columnIndex)
     }
   }
   onMouseEnter(rowIndex: number, columnIndex: number) {

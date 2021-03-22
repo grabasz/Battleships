@@ -1,7 +1,7 @@
 export enum StatusEnum {
-  blank,
-  miss,
   hit,
-  sink,
-  ship
+  miss,
+  shipHasSunk,
+  ship,
+  blank,
 }

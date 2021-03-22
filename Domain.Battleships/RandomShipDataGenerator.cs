@@ -1,6 +1,6 @@
 using System;
 
-namespace Domain.Battleships.Test
+namespace Domain.Battleships
 {
     public class RandomShipDataGenerator : IShipDataGenerator
     {

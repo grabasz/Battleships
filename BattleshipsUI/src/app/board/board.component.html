@@ -19,7 +19,7 @@
       [class.insertion]="col.isInsertionPreview"
       [class.win]="col.value == StatusEnum.ship"
       [class.fail]="col.value == StatusEnum.miss"
-      [class.sink]="col.value == StatusEnum.sink"
+      [class.sink]="col.value == StatusEnum.shipHasSunk"
       [class.blank]="!col.isInsertionPreview && col.value == StatusEnum.blank"
       class="battleship-tile"
     >

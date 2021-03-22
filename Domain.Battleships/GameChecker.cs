@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Domain.Battleships.Test
+namespace Domain.Battleships
 {
     public class GameChecker
     {
-        private readonly List<Ship> _fleet;
+        private readonly IEnumerable<Ship> _fleet;
 
-        public GameChecker(List<Ship> fleet)
+        public GameChecker(IEnumerable<Ship> fleet)
         {
             _fleet = fleet;
         }

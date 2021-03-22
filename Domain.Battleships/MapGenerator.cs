@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Domain.Battleships.Test
+namespace Domain.Battleships
 {
     public class MapGenerator : IMapGenerator
     {
@@ -11,19 +11,20 @@ namespace Domain.Battleships.Test
             _randomShipDataGenerator = randomShipDataGenerator;
         }
 
-        public bool[,] Generate(List<int> shipLengths)
+        public List<Ship> Generate(List<int> shipLengths)
         {
             var map = new bool[10, 10];
+            List<Ship> insertedShips = new List<Ship>();
             
             foreach (var shipSize in shipLengths)
             {
-                InsertShip(shipSize, map);
+                insertedShips.Add(InsertShip(shipSize, map));
             }
 
-            return map;
+            return insertedShips;
         }
 
-        private void InsertShip( int shipSize, bool[,] map)
+        private Ship InsertShip( int shipSize, bool[,] map)
         {
             while (true)
             {
@@ -38,28 +39,51 @@ namespace Domain.Battleships.Test
                 if (CanInsertShip( map, randomShipLocation))
                 {
                     if(randomShipLocation.IsVertical)
-                        PlaceShipVerticalOnMap( map, randomShipLocation);
+                        return  PlaceShipVerticalOnMap( map, randomShipLocation);
                     else
-                        PlaceShipHorizontalOnMap(map, randomShipLocation);
-                    break;
+                        return PlaceShipHorizontalOnMap(map, randomShipLocation);
                 }
             }
         }
 
-        private static void PlaceShipVerticalOnMap(bool[,] map, BotShipLocation botShipLocation)
+        private static Ship PlaceShipVerticalOnMap(bool[,] map, BotShipLocation botShipLocation)
         {
             for (var i = botShipLocation.StartShepPoint; i < botShipLocation.ShipSize; i++)
             {
                 map[i, botShipLocation.ConstantRowColumn] = true;
             }
+
+            return CreateVerticalShip(botShipLocation);
         }
 
-        private static void PlaceShipHorizontalOnMap(bool[,] map, BotShipLocation botShipLocation)
+        private static Ship CreateHorizontalShip(BotShipLocation botShipLocation)
+        {
+            return new Ship
+            {
+                ShipFront = Coordinate.FromIndex(botShipLocation.ConstantRowColumn, botShipLocation.StartShepPoint),
+                ShipBack = Coordinate.FromIndex(botShipLocation.ConstantRowColumn,
+                    botShipLocation.StartShepPoint + botShipLocation.ShipSize - 1)
+            };
+        }
+
+        private static Ship CreateVerticalShip(BotShipLocation botShipLocation)
+        {
+            return new Ship
+            {
+                ShipFront = Coordinate.FromIndex(botShipLocation.StartShepPoint, botShipLocation.ConstantRowColumn),
+                ShipBack = Coordinate.FromIndex(botShipLocation.StartShepPoint + botShipLocation.ShipSize - 1,
+                    botShipLocation.ConstantRowColumn)
+            };
+        }
+
+        private static Ship PlaceShipHorizontalOnMap(bool[,] map, BotShipLocation botShipLocation)
         {
             for (var i = botShipLocation.StartShepPoint; i < botShipLocation.ShipSize; i++)
             {
                 map[botShipLocation.ConstantRowColumn, i] = true;
             }
+
+            return CreateHorizontalShip(botShipLocation);
         }
 
         private static bool CanInsertShip( bool[,] map, BotShipLocation botShipLocation)

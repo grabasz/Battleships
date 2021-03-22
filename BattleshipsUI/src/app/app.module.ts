@@ -7,12 +7,14 @@ import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material';
 import { HttpClientModule } from '@angular/common/http';
+import { InsertionOptionsComponent } from './insertion-options/insertion-options.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     BoardComponent,
-    WaitingComponent
+    WaitingComponent,
+    InsertionOptionsComponent
   ],
   imports: [
     BrowserModule,

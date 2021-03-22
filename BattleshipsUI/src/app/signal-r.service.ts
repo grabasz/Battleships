@@ -27,7 +27,13 @@ export class SignalRService {
       .catch((err) => console.error(err));
   }
 
-  public getConnection():HubConnection{
+  public play(gameId: number, row: number, column: number) {
+    this.hubConnection
+      .invoke("play", gameId, row, column)
+      .catch((err) => console.error(err));
+  }
+
+  public getConnection(): HubConnection {
     return this.hubConnection;
   }
 }

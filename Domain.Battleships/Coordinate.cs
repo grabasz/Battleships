@@ -1,3 +1,4 @@
+using System;
 using System.Text.RegularExpressions;
 
 namespace Domain.Battleships
@@ -21,6 +22,14 @@ namespace Domain.Battleships
             var column = match.Groups[2].Value;
 
             return new Coordinate(row, column);
+        }
+
+        public static Coordinate FromIndex(int row, int column)
+        {
+            var columnString = (column + 1).ToString();
+            var rowToLetter = Convert.ToChar(row + 65).ToString();
+
+            return new Coordinate(rowToLetter, columnString);
         }
 
         public string Row { get; set; }

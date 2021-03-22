@@ -13,12 +13,7 @@
       </section>
 
       <app-waiting></app-waiting>
-      <mat-button-toggle-group *ngIf="_insertionService.isInsertionMode" [(ngModel)]="_insertionService.isVertical">
-        <mat-button-toggle [value]="true">Vertical</mat-button-toggle>
-        <mat-button-toggle [value]="false">Horizontal</mat-button-toggle>
-      </mat-button-toggle-group>
-      <button mat-raised-button color="warn" (click)="onResetClick()">Reset</button>
-      <button mat-raised-button color="primary" (click)="onConfirmClick()" *ngIf="_insertionService.awaitConfirmation">Confirm</button>
+      <app-insertion-options></app-insertion-options>
 
       <div class="columns">
         <div

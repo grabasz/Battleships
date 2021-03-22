@@ -1,11 +1,7 @@
-import { SignalRService } from './signal-r.service';
 import { InsertionService } from "./insertion.service";
-import { StatusEnum } from "./status-enum.enum";
 import { GameService } from "./game.service";
 import { BoardService } from "./board.service";
-import { Component, OnInit } from "@angular/core";
-import { Status } from "./status";
-import { Board } from "./board";
+import { Component } from "@angular/core";
 
 @Component({
   selector: "app-root",
@@ -26,12 +22,5 @@ export class AppComponent {
 
   ) {}
 
-  onResetClick() {
-    this._boardService.resetMyBoard();
-    this._insertionService.resetInsertion();
-  }
 
-  onConfirmClick() {
-    this._insertionService.sendShips();
-  }
 }

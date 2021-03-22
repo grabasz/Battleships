@@ -22,6 +22,9 @@ export class InsertionService {
     private _signalRService: SignalRService
   ) {
     this.resetInsertion();
+    _signalRService
+      .getConnection()
+      .on("gameReadyRequest", () => (this.isInsertionMode = false));
   }
 
   resetInsertion() {
