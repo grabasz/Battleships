@@ -8,13 +8,15 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material';
 import { HttpClientModule } from '@angular/common/http';
 import { InsertionOptionsComponent } from './components/insertion-options/insertion-options.component';
+import { GameResultComponent } from './components/game-result/game-result.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     BoardComponent,
     WaitingComponent,
-    InsertionOptionsComponent
+    InsertionOptionsComponent,
+    GameResultComponent
   ],
   imports: [
     BrowserModule,
