@@ -1,15 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Domain.Battleships
 {
     public class Ship
     {
-        private IEnumerable<Coordinate> _notDestroyedPart;
+        private List<Coordinate> _notDestroyedPart;
         public Coordinate ShipFront { get; set; }
         public Coordinate ShipBack { get; set; }
 
-        public IEnumerable<Coordinate> NotDestroyedPart
+        public List<Coordinate> NotDestroyedPart
         {
             get
             {
@@ -17,19 +18,19 @@ namespace Domain.Battleships
                     _notDestroyedPart = GetAllPoints();
                 return _notDestroyedPart;
             }
-            set { _notDestroyedPart = value; }
+            set => _notDestroyedPart = value;
         }
 
-        public IEnumerable<Coordinate> GetAllPoints()
+        public List<Coordinate> GetAllPoints()
         {
             if (ShipFront.Row == ShipBack.Row )
             {
-                return GetCoordinatesForHorizontalShip();
+                return GetCoordinatesForHorizontalShip().ToList();
             }
 
             if (ShipFront.Column == ShipBack.Column)
             {
-                return GetCoodinatesForVerticalShip();
+                return GetCoodinatesForVerticalShip().ToList();
             }
 
             throw new Exception("Cannot get points for diagonal ship");
@@ -64,8 +65,6 @@ namespace Domain.Battleships
             {
                 yield return new Coordinate(ShipFront.Row, i.ToString());
             }
-
-            yield break;
         }
     }
 }

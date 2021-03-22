@@ -3,11 +3,11 @@ using System.Linq;
 
 namespace Domain.Battleships
 {
-    public class GameChecker
+    public class Game
     {
-        private readonly IEnumerable<Ship> _fleet;
+        private readonly List<Ship> _fleet;
 
-        public GameChecker(IEnumerable<Ship> fleet)
+        public Game(List<Ship> fleet)
         {
             _fleet = fleet;
         }
@@ -28,12 +28,12 @@ namespace Domain.Battleships
 
         private void DestroyPartOfShip(Ship ship, Coordinate coordinate)
         {
-            ship.NotDestroyedPart = ship.NotDestroyedPart.Where(x => !Equals(x, coordinate));
+            ship.NotDestroyedPart = ship.NotDestroyedPart.Where(x => !Equals(x, coordinate)).ToList();
         }
 
-        private Ship GetShip(Coordinate coordinate)
+        public Ship GetShip(Coordinate coordinate)
         {
-            return _fleet.FirstOrDefault(x => x.NotDestroyedPart.Contains(coordinate));
+            return _fleet.FirstOrDefault(x => x.GetAllPoints().Contains(coordinate));
         }
 
         private bool IsAShip(Coordinate coordinate)

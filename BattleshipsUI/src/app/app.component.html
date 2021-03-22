@@ -4,14 +4,16 @@
       <h1 class="title">Battleship</h1>
       <hr />
 
-      <section *ngIf="_game.isWon()"
+      <section
+        *ngIf="_game.isWon()"
         class="notification is-success has-text-centered"
       >
         <h1>Success! You won the game 💰🥂💪🏆</h1>
         <h5><a href="{{ _game.getGameUrl() }}">Start Again</a></h5>
       </section>
-      <section *ngIf="_game.isFail()"
-        class="notification is-danger has-text-centered"
+      <section
+        *ngIf="_game.isFail()"
+        class="notification is-info has-text-centered"
       >
         <h1>You have failed the game! 💀</h1>
         <h5><a href="{{ _game.getGameUrl() }}">Start Again</a></h5>
@@ -23,13 +25,9 @@
       <div class="columns">
         <div
           class="column has-text-centered"
-          *ngFor="
-            let board of _game.GetBords();
-            let boardIndex = index
-          "
+          *ngFor="let board of _game.GetBords(); let boardIndex = index"
         >
-        <app-board
-        [board]="board"></app-board>
+          <app-board [board]="board"></app-board>
         </div>
       </div>
 
@@ -37,14 +35,6 @@
         <span class="tag is-success" *ngIf="_insertionService.isInsertionMode"
           >Setup Mode</span
         >
-        <ng-container *ngIf="!_insertionService.isInsertionMode">
-          <span class="tag is-warning" *ngIf="_game.isMyTurn()"
-            >Your turn!</span
-          >
-          <span class="tag is-danger" *ngIf="!_game.isMyTurn()"
-            >Other player's turn.</span
-          >
-        </ng-container>
       </div>
     </div>
   </div>

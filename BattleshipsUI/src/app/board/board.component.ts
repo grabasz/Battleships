@@ -3,7 +3,7 @@ import { GameService } from "./../game.service";
 import { InsertionService } from "./../insertion.service";
 import { Component, Input, OnInit } from "@angular/core";
 import { StatusEnum } from "../status-enum.enum";
-import { Status } from "../status";
+import { Tile } from "../status";
 import { Board } from "../board";
 
 @Component({
@@ -30,32 +30,30 @@ export class BoardComponent implements OnInit {
   ngOnInit() {
     if (!this.board.isMyBoard) {
       this.fieldStatusListener("playerFieldStatus");
-    }
-    else {
-    this.fieldStatusListener("opponentFieldStatus");
+    } else {
+      this.fieldStatusListener("opponentFieldStatus");
     }
   }
 
   private fieldStatusListener(methodName: string) {
-    // const newLocal = "playerFieldStatus";
     this._signalR
       .getConnection()
       .on(methodName, (row: number, column: number, status: StatusEnum) => {
         this.board.tiles[row][column].value = status;
+        this.board.tiles[row][column].wasDiscovered = true;
       });
   }
 
-  onClick(status: Status, rowIndex: number, columnIndex: number) {
+  onClick(status: Tile, rowIndex: number, columnIndex: number) {
     if (this._insertionService.isInsertionMode && this.isInsertionActive()) {
       this._insertionService.insertShip(rowIndex, columnIndex);
       return;
     }
-    if (this._game.isMyTurn()) {
-      status.wasDiscovered = true;
-      console.log("Click");
-      this._signalR.play(this._game.getGameId(), rowIndex, columnIndex);
-    }
+
+    status.wasDiscovered = true;
+    this._signalR.play(this._game.getGameId(), rowIndex, columnIndex);
   }
+
   onMouseEnter(rowIndex: number, columnIndex: number) {
     if (this.isInsertionActive()) {
       this._insertionService.showShip(rowIndex, columnIndex);
@@ -66,7 +64,7 @@ export class BoardComponent implements OnInit {
     return !this._insertionService.awaitConfirmation;
   }
 
-  getCellValue(status: Status): string {
+  getCellValue(status: Tile): string {
     if (status.wasDiscovered || status.value == StatusEnum.ship) {
       return this.statusMap[status.value];
     }
@@ -77,7 +75,7 @@ export class BoardComponent implements OnInit {
   isOpacityTurnedOn(board: Board): boolean {
     return (
       !this._insertionService.isInsertionMode &&
-      (board.isMyBoard || !this._game.isMyTurn())
+      (board.isMyBoard)
     );
   }
 

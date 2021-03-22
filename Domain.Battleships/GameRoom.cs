@@ -1,8 +1,11 @@
-﻿namespace Domain.Battleships
+﻿using System.Collections.Generic;
+
+namespace Domain.Battleships
 {
     public class GameRoom
     {
-        public GameChecker UserChecker { get; set; }
-        public GameChecker BotChecker { get; set; }
+        public List<(int, int)> AlreadyInsertedUsedFields { get; } = new List<(int, int)>();
+        public Game UserGame { get; set; }
+        public Game BotGame { get; set; }
     }
 }

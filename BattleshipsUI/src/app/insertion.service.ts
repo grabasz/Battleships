@@ -1,7 +1,7 @@
 import { BoardService } from "./board.service";
 import { Injectable } from "@angular/core";
 import { StatusEnum } from "./status-enum.enum";
-import { Status } from "./status";
+import { Tile } from "./status";
 import { ShipsProviderService } from "./ships-provider.service";
 import { SignalRService } from "./signal-r.service";
 
@@ -58,7 +58,7 @@ export class InsertionService {
     selectedColumnIndex: number
   ) {
     const tiles = this._boardService.myBoard.tiles;
-    const verticalShip: Status[] = [];
+    const verticalShip: Tile[] = [];
     if (selectedRowIndex + this.shipSize > 10) {
       return [];
     }
@@ -82,7 +82,7 @@ export class InsertionService {
     selectedColumnIndex: number
   ) {
     const tiles = this._boardService.myBoard.tiles;
-    const horizontalShip: Status[] = [];
+    const horizontalShip: Tile[] = [];
     if (selectedColumnIndex + this.shipSize > 10) {
       return [];
     }
@@ -134,7 +134,7 @@ export class InsertionService {
   private getFieldsForChange(
     selectedRowIndex: number,
     selectedColumnIndex: number
-  ): Status[] {
+  ): Tile[] {
     if (this.isVertical) {
       return this.getVerticalShip(selectedRowIndex, selectedColumnIndex);
     } else {
@@ -142,7 +142,7 @@ export class InsertionService {
     }
   }
 
-  resetPreview(tiles: Status[][]) {
+  resetPreview(tiles: Tile[][]) {
     tiles.forEach((row) => {
       row.forEach((column) => (column.isInsertionPreview = false));
     });

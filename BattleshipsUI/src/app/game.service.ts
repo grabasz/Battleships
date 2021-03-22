@@ -63,10 +63,6 @@ export class GameService {
     return location.port ? ":" + location.port : "";
   }
 
-  isMyTurn() {
-    return true;
-  }
-
   GetBords(): Board[] {
     if (this.isInsertionGameMode()) {
       return [this._board.myBoard];
