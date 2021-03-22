@@ -12,11 +12,8 @@ namespace BattleShipAPI.SignalRHubs
         public async Task Play(int gameId, int row, int column)
         {
             var gameRoom = GamePool.Games[gameId];
-
             await PlayUserTurn(row, column, gameRoom);
-
             var rawColumn =GetNextRandomPair(gameRoom);
-
             await PlayBotTurn(rawColumn.row, rawColumn.column, gameRoom);
         }
 
@@ -87,39 +84,19 @@ namespace BattleShipAPI.SignalRHubs
 
         public async Task InitGame(List<List<string>> playerCoordinates)
         {
-            var playerShips = playerCoordinates.Select(x => new Ship
-            {
-                ShipFront = Coordinate.FromSingleString(x[0]),
-                ShipBack = Coordinate.FromSingleString(x[1])
-            }).ToList();
+            var playerShips = CreatePlayerShips(playerCoordinates);
 
             var gameId = GamePool.CreateGame(playerShips);
             await Clients.Caller.SendAsync("gameReadyRequest", gameId);
         }
-    }
 
-    public class GamePool
-    {
-        private static readonly List<int> ShipsSizes = new List<int>
+        private static List<Ship> CreatePlayerShips(List<List<string>> playerCoordinates)
         {
-            5, 4, 4
-        };
-
-        private static int _lastGameId;
-        public static Dictionary<int, GameRoom> Games { get; } = new Dictionary<int, GameRoom>();
-
-        public static int CreateGame(List<Ship> coordinates)
-        {
-            _lastGameId++;
-            var mapGenerator = new MapGenerator(new RandomShipDataGenerator());
-            var botShips = mapGenerator.Generate(ShipsSizes);
-
-            Games.Add(_lastGameId, new GameRoom
+            return playerCoordinates.Select(x => new Ship
             {
-                UserGame = new Game(coordinates),
-                BotGame = new Game(botShips)
-            });
-            return _lastGameId;
+                ShipFront = Coordinate.FromSingleString(x[0]),
+                ShipBack = Coordinate.FromSingleString(x[1])
+            }).ToList();
         }
     }
 }
