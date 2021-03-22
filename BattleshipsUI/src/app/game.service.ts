@@ -1,6 +1,6 @@
-import { SignalRService } from './signal-r.service';
-import { BoardService } from './board.service';
-import { InsertionService } from './insertion.service';
+import { SignalRService } from "./signal-r.service";
+import { BoardService } from "./board.service";
+import { InsertionService } from "./insertion.service";
 import { Injectable } from "@angular/core";
 import { Board } from "./board";
 
@@ -10,22 +10,33 @@ import { Board } from "./board";
 export class GameService {
   gameId: number;
   isGameWon: boolean;
+  isGameFail: boolean;
 
-  constructor(private _insertionService: InsertionService, private _board: BoardService, private _signalR: SignalRService) {
-    this.gameReadyListener(_signalR);
-    this.gameWonListener(_signalR);
+  constructor(
+    private _insertionService: InsertionService,
+    private _board: BoardService,
+    private _signalR: SignalRService
+  ) {
+    this.gameReadyListener();
+    this.gameWonListener();
+    this.gameFailListener();
   }
 
-  private gameReadyListener(_signalR: SignalRService) {
-    _signalR
+  private gameReadyListener() {
+    this._signalR
       .getConnection()
       .on("gameReadyRequest", (gameId: number) => (this.gameId = gameId));
   }
 
-  private gameWonListener(_signalR: SignalRService) {
-    _signalR
+  private gameWonListener() {
+    this._signalR
       .getConnection()
       .on("gameWon", (gameId: number) => (this.isGameWon = true));
+  }
+  private gameFailListener() {
+    this._signalR
+      .getConnection()
+      .on("gameFail", (gameId: number) => (this.isGameFail = true));
   }
 
   isAllPlayersReady(): boolean {
@@ -34,6 +45,10 @@ export class GameService {
 
   isWon(): boolean {
     return this.isGameWon;
+  }
+
+  isFail() {
+    return this.isGameFail;
   }
 
   getGameId() {
@@ -53,13 +68,13 @@ export class GameService {
   }
 
   GetBords(): Board[] {
-    if(this.isInsertionGameMode()) {
+    if (this.isInsertionGameMode()) {
       return [this._board.myBoard];
     }
 
     return [this._board.myBoard, this._board.opponentBoard];
   }
-  isInsertionGameMode(): boolean{
+  isInsertionGameMode(): boolean {
     return this._insertionService.isInsertionMode;
   }
 }

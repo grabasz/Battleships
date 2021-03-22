@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain.Battleships;
@@ -11,17 +12,35 @@ namespace BattleShipAPI.SignalRHubs
         public async Task Play(int gameId, int row, int column)
         {
             var gameRoom = GamePool.Games[gameId];
-            var coordinateFromStr = Coordinate.FromIndex(row,column);
-            var status = gameRoom.BotChecker.Play(coordinateFromStr);
+            var playerCoordinate = Coordinate.FromIndex(row,column);
+            var status = gameRoom.BotChecker.Play(playerCoordinate);
+
+            await Clients.Caller.SendAsync("playerFieldStatus", row, 
+                column,
+                status);
+
             if (gameRoom.BotChecker.IsGameOver())
             {
                 await Clients.Caller.SendAsync("gameWon", gameId);
                 return;
             }
-                
-            await Clients.Caller.SendAsync("fieldStatus", row, 
-                column,
-                status);
+
+            Random random = new Random();
+            var randomRow = random.Next(0, 9);
+            var randomColumn = random.Next(0, 9);
+
+            var oponentCoordinates = Coordinate.FromIndex(randomRow, randomColumn);
+            var botStatus = gameRoom.UserChecker.Play(oponentCoordinates);
+            await Clients.Caller.SendAsync("opponentFieldStatus", randomRow,
+                randomColumn,
+                botStatus);
+
+            if (gameRoom.UserChecker.IsGameOver())
+            {
+                await Clients.Caller.SendAsync("gameFail", gameId);
+            }
+
+
         }
 
         public async Task InitGame(List<List<string>> playerCoordinates)

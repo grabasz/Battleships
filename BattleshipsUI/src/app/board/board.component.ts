@@ -1,4 +1,4 @@
-import { SignalRService } from './../signal-r.service';
+import { SignalRService } from "./../signal-r.service";
 import { GameService } from "./../game.service";
 import { InsertionService } from "./../insertion.service";
 import { Component, Input, OnInit } from "@angular/core";
@@ -25,20 +25,22 @@ export class BoardComponent implements OnInit {
     private _game: GameService,
     private _insertionService: InsertionService,
     private _signalR: SignalRService
-  ) {
-
-  }
-
-
+  ) {}
 
   ngOnInit() {
-    this.fieldStatusListener();
+    if (!this.board.isMyBoard) {
+      this.fieldStatusListener("playerFieldStatus");
+    }
+    else {
+    this.fieldStatusListener("opponentFieldStatus");
+    }
   }
 
-  private fieldStatusListener() {
+  private fieldStatusListener(methodName: string) {
+    // const newLocal = "playerFieldStatus";
     this._signalR
       .getConnection()
-      .on("fieldStatus", (row: number, column: number,status: StatusEnum) => {
+      .on(methodName, (row: number, column: number, status: StatusEnum) => {
         this.board.tiles[row][column].value = status;
       });
   }
@@ -51,7 +53,7 @@ export class BoardComponent implements OnInit {
     if (this._game.isMyTurn()) {
       status.wasDiscovered = true;
       console.log("Click");
-      this._signalR.play(this._game.getGameId(), rowIndex, columnIndex)
+      this._signalR.play(this._game.getGameId(), rowIndex, columnIndex);
     }
   }
   onMouseEnter(rowIndex: number, columnIndex: number) {
@@ -79,7 +81,7 @@ export class BoardComponent implements OnInit {
     );
   }
 
-  headerNumberToLetter(value: number): string{
+  headerNumberToLetter(value: number): string {
     return String.fromCharCode(value + 65);
   }
 }
