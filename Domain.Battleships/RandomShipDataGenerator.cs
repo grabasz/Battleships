@@ -8,12 +8,12 @@ namespace Domain.Battleships
 
         public int GetStartShipPoint(int shipSize)
         {
-            return _random.Next(0, shipSize - 1);
+            return _random.Next(0, 10 - shipSize );
         }
 
         public int GetConstantRowColumn()
         {
-            return _random.Next(0, 9);
+            return _random.Next(0, 10);
         }
 
         public bool GetIsVertical()
