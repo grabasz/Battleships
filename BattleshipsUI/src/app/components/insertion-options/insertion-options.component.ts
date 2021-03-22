@@ -1,6 +1,6 @@
-import { BoardService } from '../../board.service';
-import { InsertionService } from '../../insertion.service';
 import { Component, OnInit } from '@angular/core';
+import { BoardService } from 'src/app/services/board.service';
+import { InsertionService } from 'src/app/services/insertion.service';
 
 @Component({
   selector: 'app-insertion-options',

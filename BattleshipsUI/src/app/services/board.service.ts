@@ -1,6 +1,6 @@
 import { ShipsProviderService } from './ships-provider.service';
 import { Injectable } from "@angular/core";
-import { Board } from "./board";
+import { Board } from '../model/board';
 
 @Injectable({
   providedIn: "root",

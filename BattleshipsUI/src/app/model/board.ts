@@ -1,4 +1,4 @@
-import { Tile } from "./status";
+import { Tile } from "./tile";
 import { StatusEnum } from "./status-enum.enum";
 
 export class Board {

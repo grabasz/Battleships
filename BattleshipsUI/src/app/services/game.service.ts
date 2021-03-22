@@ -2,7 +2,7 @@ import { SignalRService } from "./signal-r.service";
 import { BoardService } from "./board.service";
 import { InsertionService } from "./insertion.service";
 import { Injectable } from "@angular/core";
-import { Board } from "./board";
+import { Board } from "../model/board";
 
 @Injectable({
   providedIn: "root",

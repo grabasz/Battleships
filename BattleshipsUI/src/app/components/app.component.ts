@@ -1,12 +1,12 @@
-import { InsertionService } from "./insertion.service";
-import { GameService } from "./game.service";
-import { BoardService } from "./board.service";
 import { Component } from "@angular/core";
+import { BoardService } from "../services/board.service";
+import { GameService } from "../services/game.service";
+import { InsertionService } from "../services/insertion.service";
 
 @Component({
   selector: "app-root",
-  templateUrl: "./components/app.component.html",
-  styleUrls: ["./components/app.component.css"],
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.css"],
 })
 export class AppComponent {
   title = "BattleshipsUI";

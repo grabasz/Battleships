@@ -1,19 +1,19 @@
-import { BoardService } from "./board.service";
-import { Injectable } from "@angular/core";
-import { StatusEnum } from "./status-enum.enum";
-import { Tile } from "./status";
-import { ShipsProviderService } from "./ships-provider.service";
-import { SignalRService } from "./signal-r.service";
+import { BoardService } from './board.service';
+import { Injectable } from '@angular/core';
+import { ShipsProviderService } from './ships-provider.service';
+import { SignalRService } from './signal-r.service';
+import { Tile } from '../model/tile';
+import { StatusEnum } from '../model/status-enum.enum';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class InsertionService {
   awaitConfirmation: boolean;
   isVertical = true;
   shipSize: number;
   islastValueEmitted: boolean;
-  isInsertionMode: boolean = true;
+  isInsertionMode = true;
   insertedShips: string[][];
 
   constructor(
@@ -24,7 +24,7 @@ export class InsertionService {
     this.resetInsertion();
     _signalRService
       .getConnection()
-      .on("gameReadyRequest", () => (this.isInsertionMode = false));
+      .on('gameReadyRequest', () => (this.isInsertionMode = false));
   }
 
   resetInsertion() {
