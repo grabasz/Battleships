@@ -1,10 +1,10 @@
-import { SignalRService } from "./../signal-r.service";
-import { GameService } from "./../game.service";
-import { InsertionService } from "./../insertion.service";
+import { SignalRService } from "../../signal-r.service";
+import { GameService } from "../../game.service";
+import { InsertionService } from "../../insertion.service";
 import { Component, Input, OnInit } from "@angular/core";
-import { StatusEnum } from "../status-enum.enum";
-import { Tile } from "../status";
-import { Board } from "../board";
+import { StatusEnum } from "../../status-enum.enum";
+import { Tile } from "../../status";
+import { Board } from "../../board";
 
 @Component({
   selector: "app-board",

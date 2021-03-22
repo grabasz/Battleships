@@ -1,5 +1,5 @@
-import { BoardService } from './../board.service';
-import { InsertionService } from './../insertion.service';
+import { BoardService } from '../../board.service';
+import { InsertionService } from '../../insertion.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
