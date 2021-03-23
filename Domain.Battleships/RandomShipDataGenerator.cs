@@ -18,7 +18,7 @@ namespace Domain.Battleships
 
         public bool GetIsVertical()
         {
-            return _random.Next(0, 1).Equals(1);
+            return _random.Next(0, 2).Equals(1);
         }
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -20,6 +21,8 @@ namespace Domain.Battleships.Test
         MapGenerator mapGenerator = new MapGenerator(new RandomShipDataGenerator());
             var ships = mapGenerator.Generate(shipLengths);
             ships.Should().HaveCount(3);
+
+            ships.SelectMany(x => x.GetAllPoints()).GroupBy(x => x).Should().HaveCount(5 + 4 + 4);
         }
 
         [Test]

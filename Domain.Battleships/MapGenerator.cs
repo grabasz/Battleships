@@ -40,8 +40,7 @@ namespace Domain.Battleships
                 {
                     if(randomShipLocation.IsVertical)
                         return  PlaceShipVerticalOnMap( map, randomShipLocation);
-                    else
-                        return PlaceShipHorizontalOnMap(map, randomShipLocation);
+                    return PlaceShipHorizontalOnMap(map, randomShipLocation);
                 }
             }
         }
@@ -95,10 +94,9 @@ namespace Domain.Battleships
                     if (map[i, botShipLocation.ConstantRowColumn])
                         return false;
                 }
-                else if (map[botShipLocation.ConstantRowColumn, i])
-                {
-                    return false;
-                }
+                else
+                    return !map[botShipLocation.ConstantRowColumn, i];
+                
             }
 
             return true;

@@ -50,7 +50,6 @@ export class BoardComponent implements OnInit {
       return;
     }
 
-    status.wasDiscovered = true;
     this._signalR.play(this._game.getGameId(), rowIndex, columnIndex);
   }
 
@@ -73,10 +72,7 @@ export class BoardComponent implements OnInit {
   }
 
   isOpacityTurnedOn(board: Board): boolean {
-    return (
-      !this._insertionService.isInsertionMode &&
-      (board.isMyBoard)
-    );
+    return !this._insertionService.isInsertionMode && board.isMyBoard;
   }
 
   headerNumberToLetter(value: number): string {
