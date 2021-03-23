@@ -36,7 +36,7 @@ namespace Domain.Battleships.Test
             MapGenerator r = new MapGenerator(shipDataGeneratorMock.Object);
 
             shipDataGeneratorMock.Setup(m => m.GetStartShipPoint(5)).Returns(0);
-            shipDataGeneratorMock.Setup(m => m.GetConstantRowColumn()).Returns(0);
+            shipDataGeneratorMock.Setup(m => m.GetRand0To9()).Returns(0);
             shipDataGeneratorMock.Setup(m => m.GetIsVertical()).Returns(true);
 
             var ships = r.Generate(shipLengths);
@@ -55,7 +55,7 @@ namespace Domain.Battleships.Test
             MapGenerator r = new MapGenerator(shipDataGeneratorMock.Object);
 
             shipDataGeneratorMock.Setup(m => m.GetStartShipPoint(5)).Returns(0);
-            shipDataGeneratorMock.Setup(m => m.GetConstantRowColumn()).Returns(0);
+            shipDataGeneratorMock.Setup(m => m.GetRand0To9()).Returns(0);
             shipDataGeneratorMock.Setup(m => m.GetIsVertical()).Returns(false);
 
             var ships = r.Generate(shipLengths);

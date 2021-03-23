@@ -11,7 +11,7 @@ namespace Domain.Battleships
             return _random.Next(0, 10 - shipSize );
         }
 
-        public int GetConstantRowColumn()
+        public int GetRand0To9()
         {
             return _random.Next(0, 10);
         }

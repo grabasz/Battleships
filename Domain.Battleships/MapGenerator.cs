@@ -32,7 +32,7 @@ namespace Domain.Battleships
                 {
                     ShipSize = shipSize,
                     IsVertical = _randomShipDataGenerator.GetIsVertical(),
-                    ConstantRowColumn = _randomShipDataGenerator.GetConstantRowColumn(),
+                    ConstantRowColumn = _randomShipDataGenerator.GetRand0To9(),
                     StartShepPoint = _randomShipDataGenerator.GetStartShipPoint(shipSize)
                 };
 
