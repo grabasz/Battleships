@@ -110,27 +110,35 @@ namespace Domain.Battleships.Test
 
         public Coordinate GetNextCoordinate()
         {
-            var isShoutingNearTarget = _alreadyGeneratedCoordinates.Select(x => x.Value).Contains( Status.Hit);
-
             var hits = _alreadyGeneratedCoordinates.Where(x =>x.Value == Status.Hit).ToList();
             if (hits.Count >= 2 /*both sides are avail*/)
             {
                 return TakeOneFromSides(hits.Select(x => x.Key).ToList());
             }
-            if ( isShoutingNearTarget)
+            if (IsShoutingNearTarget())
             {
-                var firstHit= _alreadyGeneratedCoordinates.First(x => x.Value == Status.Hit);
-                var coordinate = firstHit.Key;
-
-                while (true)
-                {
-                    var c = GetRandomDirectionPair(coordinate.RowToIndex, coordinate.ColumnToIndex);
-                    if (CoordinatsNotUsed(c))
-                        return c;
-                }
+                return ShootNearLastHit();
             }
 
             return GetNextRandomPair();
+        }
+
+        private bool IsShoutingNearTarget()
+        {
+            return _alreadyGeneratedCoordinates.Any( x => x.Value == Status.Hit);
+        }
+
+        private Coordinate ShootNearLastHit()
+        {
+            var firstHit = _alreadyGeneratedCoordinates.First(x => x.Value == Status.Hit);
+            var coordinate = firstHit.Key;
+
+            while (true)
+            {
+                var c = GetRandomDirectionPair(coordinate.RowToIndex, coordinate.ColumnToIndex);
+                if (CoordinatsNotUsed(c))
+                    return c;
+            }
         }
 
         private bool CoordinatsNotUsed(Coordinate c)
