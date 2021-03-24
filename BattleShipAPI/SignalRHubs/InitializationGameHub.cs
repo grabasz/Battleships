@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain.Battleships;
@@ -13,24 +12,8 @@ namespace BattleShipAPI.SignalRHubs
         {
             var gameRoom = GamePool.Games[gameId];
             await PlayUserTurn(row, column, gameRoom);
-            var rawColumn =GetNextRandomPair(gameRoom);
-            await PlayBotTurn(rawColumn.row, rawColumn.column, gameRoom);
-        }
 
-        private (int row, int column) GetNextRandomPair(GameRoom gameRoom)
-        {
-            Random random = new Random();
-            while (true)
-            {
-                var randomRow = random.Next(0, 10);
-                var randomColumn = random.Next(0, 10);
-                if (!gameRoom.AlreadyInsertedUsedFields.Contains((randomRow, randomColumn)))
-                {
-                    var rawColumn = (randomRow, randomColumn);
-                    gameRoom.AlreadyInsertedUsedFields.Add(rawColumn);
-                    return rawColumn;
-                }
-            }
+            await PlayBotTurn( gameRoom);
         }
 
         private async Task PlayUserTurn(int row, int column, GameRoom gameRoom)
@@ -40,7 +23,10 @@ namespace BattleShipAPI.SignalRHubs
 
             var status = gameRoomBotGame.Play(playerCoordinate);
 
-            await ShipHasSunk(status, gameRoomBotGame, playerCoordinate, "playerFieldStatus");
+            if (status == Status.ShipHasSunk)
+            {
+                await ShipHasSunk(gameRoomBotGame.GetShipByCoordinate(playerCoordinate), "playerFieldStatus");
+            }
 
             await Clients.Caller.SendAsync("playerFieldStatus", row,
                 column,
@@ -49,17 +35,28 @@ namespace BattleShipAPI.SignalRHubs
             await GameOver(gameRoomBotGame, "gameWon");
         }
 
-        private async Task PlayBotTurn(int randomRow, int randomColumn, GameRoom gameRoom)
+        private async Task PlayBotTurn( GameRoom gameRoom)
         {
-            var opponentCoordinates = Coordinate.FromIndex(randomRow, randomColumn);
+            var gameRoomBotLogic = gameRoom.BotLogic;
+            var nextCoordinate = gameRoomBotLogic.GetNextCoordinate();
             var gameRoomUserGame = gameRoom.UserGame;
 
-            var botStatus = gameRoomUserGame.Play(opponentCoordinates);
-            await Clients.Caller.SendAsync("opponentFieldStatus", randomRow,
-                randomColumn,
-                botStatus);
+            var status = gameRoomUserGame.Play(nextCoordinate);
 
-            await ShipHasSunk(botStatus, gameRoomUserGame, opponentCoordinates, "opponentFieldStatus");
+            await Clients.Caller.SendAsync("opponentFieldStatus", nextCoordinate.RowToIndex,
+                nextCoordinate.ColumnToIndex,
+                status);
+
+            gameRoomBotLogic.StoreLastStatus(nextCoordinate, status);
+
+            if (status == Status.ShipHasSunk)
+            {
+                var shipByCoordinate = gameRoomUserGame.GetShipByCoordinate(nextCoordinate);
+                gameRoomBotLogic.MarkShipAsSunk(shipByCoordinate);
+                await ShipHasSunk(shipByCoordinate, "opponentFieldStatus");
+            }
+            
+
             await GameOver(gameRoomUserGame, "gameFail");
         }
 
@@ -71,15 +68,12 @@ namespace BattleShipAPI.SignalRHubs
             }
         }
 
-        private async Task ShipHasSunk(Status status, Game gameRoomBotGame, Coordinate playerCoordinate, string playerfieldstatus)
+        private async Task ShipHasSunk(List<Coordinate> getShipByCoordinate, string playerfieldstatus)
         {
-            if (status == Status.ShipHasSunk)
-            {
-                foreach (var point in gameRoomBotGame.GetShipByCoordinate(playerCoordinate))
+                foreach (var point in getShipByCoordinate)
                     await Clients.Caller.SendAsync(playerfieldstatus, point.RowToIndex,
                         point.ColumnToIndex,
                         Status.ShipHasSunk);
-            }
         }
 
         public async Task InitGame(List<List<string>> playerCoordinates)

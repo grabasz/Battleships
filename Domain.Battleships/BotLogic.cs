@@ -18,7 +18,8 @@ namespace Domain.Battleships
 
         public Coordinate GetNextCoordinate()
         {
-            var hits = _alreadyGeneratedCoordinates.Where(x =>x.Value == Status.Hit).Select(x => x.Key).ToList();
+            var hits = GetHitsList();
+            
             var bothSidesAvailable =  BothSidesAvailable(hits);
             if (IsShipLocationAlmostKnown(hits, bothSidesAvailable))
             {
@@ -30,6 +31,16 @@ namespace Domain.Battleships
             }
 
             return GetNextRandom();
+        }
+
+        private List<Coordinate> GetHitsList()
+        {
+            var coordinates = _alreadyGeneratedCoordinates.
+                Where(x =>x.Value == Status.Hit).
+                Select(x => x.Key).ToList();
+            if (coordinates.GroupBy(x => x.Row).Count() < coordinates.Count())
+                return coordinates.OrderBy(x => x.ColumnToIndex).ToList();
+            return coordinates.OrderBy(x => x.RowToIndex).ToList();
         }
 
         private static bool IsShipLocationAlmostKnown(List<Coordinate> hits, bool bothSidesAvailable)
@@ -137,9 +148,9 @@ namespace Domain.Battleships
             return Coordinate.FromIndex(row, column - 1);
         }
 
-        public void StoreLastStatus(KeyValuePair<Coordinate, Status> pair)
+        public void StoreLastStatus(Coordinate coordinate, Status status)
         {
-            _alreadyGeneratedCoordinates.Add(pair);
+            _alreadyGeneratedCoordinates.Add(new KeyValuePair<Coordinate, Status>(coordinate,status));
         }
 
         private Coordinate GetNextRandom()

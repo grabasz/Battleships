@@ -22,7 +22,7 @@ namespace Domain.Battleships.Test
         {
             var shipDataGeneratorMock = new Mock<IShipDataGenerator>();
             var botLogic = new BotLogic(shipDataGeneratorMock.Object);
-            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(1, 0), Status.Miss));
+            botLogic.StoreLastStatus(Coordinate.FromIndex(1, 0), Status.Miss);
 
             botLogic.GetNextCoordinate();
 
@@ -36,10 +36,10 @@ namespace Domain.Battleships.Test
             var botLogic = new BotLogic(shipDataGeneratorMock.Object);
             shipDataGeneratorMock.Setup(m => m.GetDirection()).Returns(3);
 
-            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(1, 1), Status.Hit));
-            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(2, 1), Status.Miss));
-            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(1, 2), Status.Miss));
-            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(0, 1), Status.Miss));
+            botLogic.StoreLastStatus(Coordinate.FromIndex(1, 1), Status.Hit);
+            botLogic.StoreLastStatus(Coordinate.FromIndex(2, 1), Status.Miss);
+            botLogic.StoreLastStatus(Coordinate.FromIndex(1, 2), Status.Miss);
+            botLogic.StoreLastStatus(Coordinate.FromIndex(0, 1), Status.Miss);
 
             botLogic.GetNextCoordinate();
             shipDataGeneratorMock.Verify(x => x.GetDirection(),Times.Once);
@@ -52,9 +52,9 @@ namespace Domain.Battleships.Test
             var botLogic = new BotLogic(shipDataGeneratorMock.Object);
 
 
-            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(1, 0), Status.Miss));
-            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(1, 1), Status.Hit));
-            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(2, 1), Status.Hit));
+            botLogic.StoreLastStatus(Coordinate.FromIndex(1, 0), Status.Miss);
+            botLogic.StoreLastStatus(Coordinate.FromIndex(1, 1), Status.Hit);
+            botLogic.StoreLastStatus(Coordinate.FromIndex(2, 1), Status.Hit);
 
             var coordinate = botLogic.GetNextCoordinate();
             coordinate.RowToIndex.Should().Be(3);
@@ -67,10 +67,10 @@ namespace Domain.Battleships.Test
             var botLogic = new BotLogic(shipDataGeneratorMock.Object);
 
 
-            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(1, 0), Status.Miss));
-            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(1, 1), Status.Hit));
-            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(2, 1), Status.Hit));
-            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(3, 1), Status.Hit));
+            botLogic.StoreLastStatus(Coordinate.FromIndex(1, 0), Status.Miss);
+            botLogic.StoreLastStatus(Coordinate.FromIndex(1, 1), Status.Hit);
+            botLogic.StoreLastStatus(Coordinate.FromIndex(2, 1), Status.Hit);
+            botLogic.StoreLastStatus(Coordinate.FromIndex(3, 1), Status.Hit);
 
             var coordinate = botLogic.GetNextCoordinate();
             coordinate.RowToIndex.Should().Be(4);
@@ -83,10 +83,10 @@ namespace Domain.Battleships.Test
             var botLogic = new BotLogic(shipDataGeneratorMock.Object);
 
 
-            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(1, 0), Status.Miss));
-            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(1, 1), Status.Hit));
-            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(2, 1), Status.Hit));
-            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(3, 1), Status.Miss));
+            botLogic.StoreLastStatus(Coordinate.FromIndex(1, 0), Status.Miss);
+            botLogic.StoreLastStatus(Coordinate.FromIndex(1, 1), Status.Hit);
+            botLogic.StoreLastStatus(Coordinate.FromIndex(2, 1), Status.Hit);
+            botLogic.StoreLastStatus(Coordinate.FromIndex(3, 1), Status.Miss);
 
             var coordinate = botLogic.GetNextCoordinate();
             coordinate.RowToIndex.Should().Be(0);
@@ -100,15 +100,32 @@ namespace Domain.Battleships.Test
             var botLogic = new BotLogic(shipDataGeneratorMock.Object);
 
 
-            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(1, 0), Status.Miss));
-            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(1, 1), Status.Hit));
-            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(2, 1), Status.Hit));
-            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(3, 1), Status.Miss));
-            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(0, 1), Status.Miss));
+            botLogic.StoreLastStatus(Coordinate.FromIndex(1, 0), Status.Miss);
+            botLogic.StoreLastStatus(Coordinate.FromIndex(1, 1), Status.Hit);
+            botLogic.StoreLastStatus(Coordinate.FromIndex(2, 1), Status.Hit);
+            botLogic.StoreLastStatus(Coordinate.FromIndex(3, 1), Status.Miss);
+            botLogic.StoreLastStatus(Coordinate.FromIndex(0, 1), Status.Miss);
 
             var coordinate = botLogic.GetNextCoordinate();
             coordinate.RowToIndex.Should().Be(1);
             coordinate.ColumnToIndex.Should().Be(2);
+        }
+
+        [Test]
+        public void ShouldGetSortedHitListForLookingForSides()
+        {
+            var shipDataGeneratorMock = new Mock<IShipDataGenerator>();
+            shipDataGeneratorMock.Setup(m => m.GetDirection()).Returns(1);
+            var botLogic = new BotLogic(shipDataGeneratorMock.Object);
+
+
+            botLogic.StoreLastStatus(Coordinate.FromIndex(2, 1), Status.Hit);
+            botLogic.StoreLastStatus(Coordinate.FromIndex(1, 1), Status.Hit);
+            botLogic.StoreLastStatus(Coordinate.FromIndex(3, 1), Status.Hit);
+            botLogic.StoreLastStatus(Coordinate.FromIndex(4, 1), Status.Miss);
+
+            var coordinate = botLogic.GetNextCoordinate();
+            coordinate.RowToIndex.Should().Be(0);
         }
 
         [Test]
@@ -119,11 +136,11 @@ namespace Domain.Battleships.Test
             var botLogic = new BotLogic(shipDataGeneratorMock.Object);
 
 
-            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(1, 0), Status.Miss));
-            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(1, 1), Status.Hit));
-            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(2, 1), Status.Hit));
-            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(3, 1), Status.Hit));
-            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(0, 1), Status.Hit));
+            botLogic.StoreLastStatus(Coordinate.FromIndex(1, 0), Status.Miss);
+            botLogic.StoreLastStatus(Coordinate.FromIndex(1, 1), Status.Hit);
+            botLogic.StoreLastStatus(Coordinate.FromIndex(2, 1), Status.Hit);
+            botLogic.StoreLastStatus(Coordinate.FromIndex(3, 1), Status.Hit);
+            botLogic.StoreLastStatus(Coordinate.FromIndex(0, 1), Status.Hit);
 
 
             var listForMarking = new List<Coordinate>
