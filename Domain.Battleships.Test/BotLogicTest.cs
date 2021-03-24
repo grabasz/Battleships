@@ -143,21 +143,23 @@ namespace Domain.Battleships.Test
             var firstHit = coordinates.First();
             var secondHit = coordinates.Last();
 
-            if (firstHit.Row == secondHit.Row)
+            if (IsHorizontalShip(firstHit, secondHit))
             {
-                var nextColumn = Coordinate.FromIndex(firstHit.RowToIndex, 
-                    GetNextValue(firstHit.ColumnToIndex, 
-                    secondHit.ColumnToIndex));
-                if(CoordinatsNotUsed(nextColumn))
-                    return nextColumn;
-                return Coordinate.FromIndex(firstHit.RowToIndex,
-                    GetPreviousValue(firstHit.ColumnToIndex,
-                        secondHit.ColumnToIndex));
-               
+                return GetOneSideOfHorizontalShip(firstHit, secondHit);
             }
 
-            var nextRow= Coordinate.FromIndex(GetNextValue(firstHit.RowToIndex,
-                    secondHit.RowToIndex), 
+            return GetOneSideOfVerticalShip(firstHit, secondHit);
+        }
+
+        private static bool IsHorizontalShip(Coordinate firstHit, Coordinate secondHit)
+        {
+            return firstHit.Row == secondHit.Row;
+        }
+
+        private Coordinate GetOneSideOfVerticalShip(Coordinate firstHit, Coordinate secondHit)
+        {
+            var nextRow = Coordinate.FromIndex(GetNextValue(firstHit.RowToIndex,
+                    secondHit.RowToIndex),
                 firstHit.ColumnToIndex);
             if (CoordinatsNotUsed(nextRow))
                 return nextRow;
@@ -165,6 +167,18 @@ namespace Domain.Battleships.Test
             return Coordinate.FromIndex(GetPreviousValue(firstHit.RowToIndex,
                     secondHit.RowToIndex),
                 firstHit.ColumnToIndex);
+        }
+
+        private Coordinate GetOneSideOfHorizontalShip(Coordinate firstHit, Coordinate secondHit)
+        {
+            var nextColumn = Coordinate.FromIndex(firstHit.RowToIndex,
+                GetNextValue(firstHit.ColumnToIndex,
+                    secondHit.ColumnToIndex));
+            if (CoordinatsNotUsed(nextColumn))
+                return nextColumn;
+            return Coordinate.FromIndex(firstHit.RowToIndex,
+                GetPreviousValue(firstHit.ColumnToIndex,
+                    secondHit.ColumnToIndex));
         }
 
         private static int GetNextValue(int first, int second)
