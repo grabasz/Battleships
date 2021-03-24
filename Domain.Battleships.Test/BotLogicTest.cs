@@ -49,7 +49,7 @@ namespace Domain.Battleships.Test
         }
 
         [Test]
-        public void ShouldKeepOneDirectionUntilMissOrShipHasSunk()
+        public void ShouldTargetOneOfBothSidesAfterFirstHit()
         {
             var shipDataGeneratorMock = new Mock<IShipDataGenerator>();
             var botLogic = new BotLogic(shipDataGeneratorMock.Object);
@@ -61,6 +61,22 @@ namespace Domain.Battleships.Test
 
             var coordinate = botLogic.GetNextCoordinate();
             coordinate.RowToIndex.Should().Be(3);
+        }
+
+        [Test]
+        public void ShouldKeepOneDirectionUntilMiss()
+        {
+            var shipDataGeneratorMock = new Mock<IShipDataGenerator>();
+            var botLogic = new BotLogic(shipDataGeneratorMock.Object);
+
+
+            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(1, 0), Status.Miss));
+            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(1, 1), Status.Hit));
+            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(2, 1), Status.Hit));
+            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(3, 1), Status.Hit));
+
+            var coordinate = botLogic.GetNextCoordinate();
+            coordinate.RowToIndex.Should().Be(4);
         }
     }
 
@@ -81,7 +97,7 @@ namespace Domain.Battleships.Test
             var isShoutingNearTarget = _alreadyGeneratedCoordinates.Select(x => x.Value).Contains( Status.Hit);
 
             var hits = _alreadyGeneratedCoordinates.Where(x =>x.Value == Status.Hit).ToList();
-            if (hits.Count == 2 /*both sides are avail*/)
+            if (hits.Count >= 2 /*both sides are avail*/)
             {
                 return TakeOneFromSides(hits.Select(x => x.Key));
             }
