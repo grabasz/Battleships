@@ -38,7 +38,6 @@ namespace Domain.Battleships.Test
             var botLogic = new BotLogic(shipDataGeneratorMock.Object);
             shipDataGeneratorMock.Setup(m => m.GetDirection()).Returns(3);
 
-            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(1, 0), Status.Miss));
             botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(1, 1), Status.Hit));
             botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(2, 1), Status.Miss));
             botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(1, 2), Status.Miss));
@@ -78,6 +77,23 @@ namespace Domain.Battleships.Test
             var coordinate = botLogic.GetNextCoordinate();
             coordinate.RowToIndex.Should().Be(4);
         }
+
+        [Test]
+        public void ShouldTurnToTheOtherSideWhenLastWasMiss()
+        {
+            var shipDataGeneratorMock = new Mock<IShipDataGenerator>();
+            var botLogic = new BotLogic(shipDataGeneratorMock.Object);
+
+
+            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(1, 0), Status.Miss));
+            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(1, 1), Status.Hit));
+            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(2, 1), Status.Hit));
+            botLogic.StoreLastStatus(new KeyValuePair<Coordinate, Status>(Coordinate.FromIndex(3, 1), Status.Miss));
+
+            var coordinate = botLogic.GetNextCoordinate();
+            coordinate.RowToIndex.Should().Be(0);
+
+        }
     }
 
     internal class BotLogic
@@ -99,7 +115,7 @@ namespace Domain.Battleships.Test
             var hits = _alreadyGeneratedCoordinates.Where(x =>x.Value == Status.Hit).ToList();
             if (hits.Count >= 2 /*both sides are avail*/)
             {
-                return TakeOneFromSides(hits.Select(x => x.Key));
+                return TakeOneFromSides(hits.Select(x => x.Key).ToList());
             }
             if ( isShoutingNearTarget)
             {
@@ -119,25 +135,48 @@ namespace Domain.Battleships.Test
 
         private bool CoordinatsNotUsed(Coordinate c)
         {
-            return _alreadyGeneratedCoordinates.All(x => x.Key != c);
+            return _alreadyGeneratedCoordinates.All(x => !x.Key.Equals(c) );
         }
 
-        private Coordinate TakeOneFromSides(IEnumerable<Coordinate> coordinates)
+        private Coordinate TakeOneFromSides(List<Coordinate> coordinates)
         {
             var firstHit = coordinates.First();
             var secondHit = coordinates.Last();
 
             if (firstHit.Row == secondHit.Row)
             {
-                var max = Math.Max(firstHit.ColumnToIndex, secondHit.ColumnToIndex);
-                return Coordinate.FromIndex(firstHit.RowToIndex, max + 1);
+                var nextColumn = Coordinate.FromIndex(firstHit.RowToIndex, 
+                    GetNextValue(firstHit.ColumnToIndex, 
+                    secondHit.ColumnToIndex));
+                if(CoordinatsNotUsed(nextColumn))
+                    return nextColumn;
+                return Coordinate.FromIndex(firstHit.RowToIndex,
+                    GetPreviousValue(firstHit.ColumnToIndex,
+                        secondHit.ColumnToIndex));
+               
             }
 
-            else
-            {
-                var max = Math.Max(firstHit.RowToIndex, secondHit.RowToIndex);
-                return Coordinate.FromIndex(max + 1, firstHit.ColumnToIndex);
-            }
+            var nextRow= Coordinate.FromIndex(GetNextValue(firstHit.RowToIndex,
+                    secondHit.RowToIndex), 
+                firstHit.ColumnToIndex);
+            if (CoordinatsNotUsed(nextRow))
+                return nextRow;
+
+            return Coordinate.FromIndex(GetPreviousValue(firstHit.RowToIndex,
+                    secondHit.RowToIndex),
+                firstHit.ColumnToIndex);
+        }
+
+        private static int GetNextValue(int first, int second)
+        {
+            var max = Math.Max(first, second);
+            return max + 1;
+        }
+
+        private static int GetPreviousValue(int first, int second)
+        {
+            var min = Math.Min(first, second);
+            return min - 1;
         }
 
         private Coordinate GetRandomDirectionPair(int row, int column)
