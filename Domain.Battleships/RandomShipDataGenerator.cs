@@ -20,5 +20,10 @@ namespace Domain.Battleships
         {
             return _random.Next(0, 2).Equals(1);
         }
+
+        public int GetDirection()
+        {
+            return _random.Next(0, 4);
+        }
     }
 }

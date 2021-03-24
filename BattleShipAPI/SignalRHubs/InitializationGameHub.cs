@@ -75,7 +75,7 @@ namespace BattleShipAPI.SignalRHubs
         {
             if (status == Status.ShipHasSunk)
             {
-                foreach (var point in gameRoomBotGame.GetShip(playerCoordinate).GetAllPoints())
+                foreach (var point in gameRoomBotGame.GetShipByCoordinate(playerCoordinate))
                     await Clients.Caller.SendAsync(playerfieldstatus, point.RowToIndex,
                         point.ColumnToIndex,
                         Status.ShipHasSunk);

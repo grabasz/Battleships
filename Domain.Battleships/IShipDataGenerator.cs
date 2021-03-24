@@ -5,5 +5,6 @@ namespace Domain.Battleships
         int GetStartShipPoint(int shipSize);
         int GetRand0To9();
         bool GetIsVertical();
+        int GetDirection();
     }
 }

@@ -3,7 +3,14 @@ using System.Linq;
 
 namespace Domain.Battleships
 {
-    public class Game
+    public interface IGame
+    {
+        Status Play(Coordinate coordinate);
+        List<Coordinate> GetShipByCoordinate(Coordinate playerCoordinate);
+        bool IsGameOver();
+    }
+
+    public class Game : IGame
     {
         private readonly List<Ship> _fleet;
 
@@ -31,7 +38,12 @@ namespace Domain.Battleships
             ship.NotDestroyedPart = ship.NotDestroyedPart.Where(x => !Equals(x, coordinate)).ToList();
         }
 
-        public Ship GetShip(Coordinate coordinate)
+        public List<Coordinate> GetShipByCoordinate(Coordinate playerCoordinate)
+        {
+            return GetShip(playerCoordinate).GetAllPoints();
+        }
+
+        private Ship GetShip(Coordinate coordinate)
         {
             return _fleet.FirstOrDefault(x => x.GetAllPoints().Contains(coordinate));
         }
