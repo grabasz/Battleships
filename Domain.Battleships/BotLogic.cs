@@ -10,7 +10,6 @@ namespace Domain.Battleships
             new List<KeyValuePair<Coordinate, Status>>();
 
         private readonly IShipDataGenerator _shipDataGenerator;
-        private List<Coordinate> _tempList;
 
         public BotLogic(IShipDataGenerator shipDataGenerator)
         {
@@ -23,11 +22,6 @@ namespace Domain.Battleships
             
             var bothSidesAvailable =  BothSidesAvailable(hits);
             
-//            if (hits.Count >= 2 && !BothSidesAvailable(hits))
-//            {
-//                _tempList = hits.ToList();
-//                hits = new List<Coordinate>(){ hits.First() };
-//            }
             if (IsTwoOrMoreInStreightLine(hits, bothSidesAvailable))
             {
                 return TakeOneFromSides(hits);
@@ -46,12 +40,12 @@ namespace Domain.Battleships
                 Where(x =>x.Value == Status.Hit).
                 Select(x => x.Key).ToList();
 
-            var rowsGroup = GetGroups(coordinates, x => x.Row).ToList();
-            var columnGroup = GetGroups(coordinates, x => x.Column).ToList();
+            var rowsGroup = GetGroups(coordinates, x => x.Row).OrderBy(x => x.ColumnToIndex).ToList();
+            var columnGroup = GetGroups(coordinates, x => x.Column).OrderBy(x => x.RowToIndex).ToList();
 
             if(BothSidesAvailable(rowsGroup))
-                return rowsGroup.OrderBy(x => x.ColumnToIndex).ToList();
-            return columnGroup.OrderBy(x => x.RowToIndex).ToList();
+                return rowsGroup;
+            return columnGroup;
 
         }
 
