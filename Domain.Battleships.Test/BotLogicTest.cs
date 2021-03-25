@@ -129,6 +129,27 @@ namespace Domain.Battleships.Test
         }
 
         [Test]
+        public void ShouldGetRidOfWrongPath_CornerCaseWhen3ShipsAreSticked()
+        {
+            var shipDataGeneratorMock = new Mock<IShipDataGenerator>();
+            shipDataGeneratorMock.Setup(m => m.GetDirection()).Returns(1);
+            var botLogic = new BotLogic(shipDataGeneratorMock.Object);
+
+
+            botLogic.StoreLastStatus(Coordinate.FromIndex(2, 1), Status.Hit);
+            botLogic.StoreLastStatus(Coordinate.FromIndex(2, 2), Status.Hit);
+            botLogic.StoreLastStatus(Coordinate.FromIndex(2,3), Status.Hit);
+            botLogic.StoreLastStatus(Coordinate.FromIndex(2,4), Status.Miss);
+            botLogic.StoreLastStatus(Coordinate.FromIndex(2,0), Status.Miss);
+            botLogic.StoreLastStatus(Coordinate.FromIndex(1, 1), Status.Hit);
+            botLogic.StoreLastStatus(Coordinate.FromIndex(3, 1), Status.Hit);
+            botLogic.StoreLastStatus(Coordinate.FromIndex(4, 1), Status.Miss);
+
+            var coordinate = botLogic.GetNextCoordinate();
+            coordinate.RowToIndex.Should().Be(0);
+        }
+
+        [Test]
         public void ShouldMarkShipAsSunkForGivenCollectionNextPointWillBeRandomGenerated()
         {
             var shipDataGeneratorMock = new Mock<IShipDataGenerator>();
