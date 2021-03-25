@@ -1,3 +1,4 @@
+import { environment } from './../../environments/environment';
 import { Injectable } from "@angular/core";
 import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 
@@ -13,12 +14,18 @@ export class SignalRService {
 
   public startConnection() {
     this.hubConnection = new HubConnectionBuilder()
-      .withUrl("https://localhost:44365/hub")
+      .withUrl(this.getApiUrl())
       .build();
     this.hubConnection
       .start()
       .then(() => console.log("Connection started"))
       .catch((err) => console.log("Error while starting connection: " + err));
+  }
+
+  private getApiUrl(): string {
+    // if(environment.production)
+    //   return environment.apiUrl;
+    return environment.apiUrl;
   }
 
   public sendData(data: string[][]) {
