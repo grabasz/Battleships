@@ -4,5 +4,6 @@
         ".vscode{,/**}"
     ],
     "appService.defaultWebAppToDeploy": "/subscriptions/4c3088e1-f4ec-4134-8669-689cde44bd06/resourceGroups/cloud-shell-storage-westeurope/providers/Microsoft.Web/sites/battleShipUI",
-    "appService.deploySubpath": "./dist/BattleshipsUI"
+    "appService.deploySubpath": "./dist/BattleshipsUI",
+    "appService.showBuildDuringDeployPrompt": false
 }
