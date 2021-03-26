@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using Domain.Battleships.GamePlay;
+using Domain.Battleships.MapGeneraton;
+using Domain.Battleships.Model;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;

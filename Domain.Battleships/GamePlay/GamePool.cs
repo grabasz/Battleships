@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using Domain.Battleships.MapGeneraton;
+using Domain.Battleships.Model;
 
-namespace Domain.Battleships
+namespace Domain.Battleships.GamePlay
 {
     public class GamePool
     {

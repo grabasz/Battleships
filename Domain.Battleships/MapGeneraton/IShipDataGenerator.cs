@@ -1,4 +1,4 @@
-namespace Domain.Battleships
+namespace Domain.Battleships.MapGeneraton
 {
     public interface IShipDataGenerator
     {

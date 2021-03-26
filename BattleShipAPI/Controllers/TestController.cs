@@ -7,9 +7,9 @@ namespace BattleShipAPI.Controllers
     {
         [HttpGet]
         [Route("Hello")]
-        public ActionResult Index()
+        public ActionResult ISApiWorking()
         {
-            return Ok("HelloWorld");
+            return Ok("API is working, connection hub: https://localhost:44365/hub");
         }
     }
 }

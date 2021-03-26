@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Domain.Battleships.MapGeneraton;
 
-namespace Domain.Battleships
+namespace Domain.Battleships.GamePlay
 {
     public class GameRoom
     {
         public BotLogic BotLogic{ get; } = new BotLogic(new RandomShipDataGenerator());
-        public List<(int, int)> AlreadyInsertedUsedFields { get; } = new List<(int, int)>();
         public Game UserGame { get; set; }
         public Game BotGame { get; set; }
     }

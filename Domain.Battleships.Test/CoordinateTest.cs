@@ -1,3 +1,4 @@
+using Domain.Battleships.Model;
 using FluentAssertions;
 using NUnit.Framework;
 

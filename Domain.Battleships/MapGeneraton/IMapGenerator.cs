@@ -1,6 +1,7 @@
 using System.Collections.Generic;
+using Domain.Battleships.Model;
 
-namespace Domain.Battleships
+namespace Domain.Battleships.MapGeneraton
 {
     public interface IMapGenerator
     {

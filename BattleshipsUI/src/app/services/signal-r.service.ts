@@ -1,6 +1,6 @@
 import { environment } from './../../environments/environment';
 import { Injectable } from "@angular/core";
-import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
+import { HttpTransportType, HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
 @Injectable({
   providedIn: "root",
@@ -14,7 +14,9 @@ export class SignalRService {
 
   public startConnection() {
     this.hubConnection = new HubConnectionBuilder()
-      .withUrl(this.getApiUrl())
+    .configureLogging(LogLevel.Debug)
+      .withUrl(this.getApiUrl()
+      )
       .build();
     this.hubConnection
       .start()

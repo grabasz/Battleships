@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Battleships.MapGeneraton;
+using Domain.Battleships.Model;
 
-namespace Domain.Battleships
+namespace Domain.Battleships.GamePlay
 {
     public class BotLogic
     {

@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using Domain.Battleships.GamePlay;
+using Domain.Battleships.Model;
 using FluentAssertions;
 using NUnit.Framework;
 

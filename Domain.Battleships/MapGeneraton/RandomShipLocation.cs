@@ -1,9 +1,9 @@
-namespace Domain.Battleships
+namespace Domain.Battleships.MapGeneraton
 {
-    public class BotShipLocation
+    public class RandomShipLocation
     {
         public bool IsVertical { get; set; }
-        public int ConstantRowColumn { get; set; }
+        public int ConstantRowOrColumn { get; set; }
         public int StartShepPoint { get; set; }
         public int ShipSize { get; set; }
     }

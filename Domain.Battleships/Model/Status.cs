@@ -1,4 +1,4 @@
-namespace Domain.Battleships
+namespace Domain.Battleships.Model
 {
     public enum Status
     {

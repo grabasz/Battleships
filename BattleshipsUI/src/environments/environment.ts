@@ -4,8 +4,9 @@
 
 export const environment = {
   production: false,
-  // apiUrl: 'https://battleshipapi20210325145705.azurewebsites.net:8081/hub'
-  apiUrl: 'https://localhost:44365/hub'
+  // apiUrl: 'http://battleshipapi20210325145705.azurewebsites.net:5000/hub'
+  // apiUrl: 'https://localhost:44365/hub'
+  apiUrl: 'http://localhost:5000/hub'
 };
 
 /*

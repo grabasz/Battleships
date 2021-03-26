@@ -1,21 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Domain.Battleships;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
+using Domain.Battleships.GamePlay;
+using Domain.Battleships.Model;
 using Microsoft.AspNetCore.SignalR;
 
 namespace BattleShipAPI.SignalRHubs
 {
-    public class InitializationGameHub : Hub
     public class GameHub : Hub
     {
         public async Task Play(int gameId, int row, int column)
         {
             var gameRoom = GamePool.Games[gameId];
             await PlayUserTurn(row, column, gameRoom);
-
             await PlayBotTurn( gameRoom);
         }
 
