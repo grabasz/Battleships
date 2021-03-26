@@ -32,16 +32,16 @@ namespace BattleShipAPI
             });
 
 
-//            services.AddCors(options =>
-//            {
-//                options.AddPolicy("CorsPolicy",
-//                    builder =>
-//                        builder.WithOrigins("https://battleshipuiapp.azurewebsites.net",
-//                                "http://localhost:4200")
-//                            .AllowAnyMethod()
-//                            .AllowAnyHeader()
-//                            .AllowCredentials());
-//            });
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder =>
+                        builder.WithOrigins("https://battleshipuiapp.azurewebsites.net",
+                                "http://localhost:4200")
+                            .AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowCredentials());
+            });
 
         }
 
@@ -50,12 +50,8 @@ namespace BattleShipAPI
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
 
-            
-            app.UseCors(options => 
-                options.WithOrigins("https://battleshipuiapp.azurewebsites.net",
-                    "http://localhost:4200")
-                    .AllowAnyHeader()
-                    .AllowAnyMethod());
+
+            app.UseCors("CorsPolicy");
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {

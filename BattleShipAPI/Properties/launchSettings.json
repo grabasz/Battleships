@@ -13,6 +13,7 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "applicationUrl": "http://localhost:5000",
+      "sslPort": 44365,
       "launchUrl": "Test/Hello",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",

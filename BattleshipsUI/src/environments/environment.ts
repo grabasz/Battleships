@@ -4,9 +4,10 @@
 
 export const environment = {
   production: false,
-  // apiUrl: 'http://battleshipapi20210325145705.azurewebsites.net:5000/hub'
-  // apiUrl: 'https://localhost:44365/hub'
-  apiUrl: 'http://localhost:5000/hub'
+  // apiUrl: 'https://battleshipapi20210325145705.azurewebsites.net/hub' //Azure remote
+
+  // apiUrl: 'https://localhost:44365/hub' //IIS express
+  apiUrl: 'http://localhost:5000/hub' //from .net core console
 };
 
 /*

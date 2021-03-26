@@ -29,13 +29,13 @@ export class SignalRService {
 
   private getOptions() {
     console.log("Setting options for SignalR");
-    if (environment.production) {
-      console.log("SignalR negotiation disabled");
-      return {
-        skipNegotiation: true,
-        transport: HttpTransportType.WebSockets,
-      };
-    }
+      // console.log("SignalR negotiation disabled");
+      // return { //IIS Express + RemoteAPI on localhost
+      //   skipNegotiation: true,
+      //   transport: HttpTransportType.WebSockets,
+      // };
+
+      return {};
   }
 
   private getApiUrl(): string {
