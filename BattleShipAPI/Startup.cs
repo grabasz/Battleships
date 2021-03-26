@@ -1,5 +1,11 @@
+using System;
+using Azure.Core.Extensions;
+using Azure.Storage.Blobs;
+using Azure.Storage.Queues;
+using BattleShipAPI.SignalRHubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -19,44 +25,60 @@ namespace BattleShipAPI
         {
             services.AddControllers();
             services.AddSignalR();
+            services.AddAzureClients(builder =>
+            {
+                builder.AddBlobServiceClient(Configuration["ConnectionStrings:Storage:blob"], true);
+                builder.AddQueueServiceClient(Configuration["ConnectionStrings:Storage:queue"], true);
+            });
 
-            
-//            services.AddCors(options =>
-//            {
-//                options.AddPolicy("CorsPolicy",
-//                    builder => 
-//                        builder.WithOrigins
-////                        builder.WithOrigins("http://localhost:4200")
-////                        .AllowAnyMethod()
-////                        .AllowAnyHeader()
-////                        .AllowCredentials());
-//            });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder =>
+                        builder.WithOrigins("https://battleshipuiapp.azurewebsites.net/",
+                                "http://localhost:4200")
+                            .AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowCredentials());
+            });
 
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
 
             app.UseHttpsRedirection();
             app.UseRouting();
-            app.UseCors(x => x
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .SetIsOriginAllowed(origin => true) // allow any origin
-                .AllowCredentials()); // allow credentials
+            app.UseCors("CorsPolicy");
+
             app.UseAuthorization();
- 
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHub<SignalRHubs.InitializationGameHub>("/hub");
+                endpoints.MapHub<GameHub>("/hub");
             });
+        }
+    }
 
+    internal static class StartupExtensions
+    {
+        public static IAzureClientBuilder<BlobServiceClient, BlobClientOptions> AddBlobServiceClient(
+            this AzureClientFactoryBuilder builder, string serviceUriOrConnectionString, bool preferMsi)
+        {
+            if (preferMsi && Uri.TryCreate(serviceUriOrConnectionString, UriKind.Absolute, out var serviceUri))
+                return builder.AddBlobServiceClient(serviceUri);
+            return builder.AddBlobServiceClient(serviceUriOrConnectionString);
+        }
 
+        public static IAzureClientBuilder<QueueServiceClient, QueueClientOptions> AddQueueServiceClient(
+            this AzureClientFactoryBuilder builder, string serviceUriOrConnectionString, bool preferMsi)
+        {
+            if (preferMsi && Uri.TryCreate(serviceUriOrConnectionString, UriKind.Absolute, out var serviceUri))
+                return builder.AddQueueServiceClient(serviceUri);
+            return builder.AddQueueServiceClient(serviceUriOrConnectionString);
         }
     }
 }

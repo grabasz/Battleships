@@ -23,8 +23,6 @@ export class SignalRService {
   }
 
   private getApiUrl(): string {
-    // if(environment.production)
-    //   return environment.apiUrl;
     return environment.apiUrl;
   }
 

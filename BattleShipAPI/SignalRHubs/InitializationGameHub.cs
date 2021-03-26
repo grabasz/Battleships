@@ -2,11 +2,14 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Domain.Battleships;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace BattleShipAPI.SignalRHubs
 {
     public class InitializationGameHub : Hub
+    public class GameHub : Hub
     {
         public async Task Play(int gameId, int row, int column)
         {
