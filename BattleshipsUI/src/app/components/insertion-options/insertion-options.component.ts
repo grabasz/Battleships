@@ -9,7 +9,7 @@ import { InsertionService } from 'src/app/services/insertion.service';
 })
 export class InsertionOptionsComponent implements OnInit {
 
-  constructor(private _insertionService: InsertionService, private _boardService: BoardService) { }
+  constructor(public _insertionService: InsertionService, private _boardService: BoardService) { }
 
   ngOnInit() {
   }

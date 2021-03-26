@@ -39,7 +39,7 @@ export class GameService {
       .on("gameFail", (gameId: number) => (this.isGameFail = true));
   }
 
-  isAllPlayersReady(): boolean {
+  public isAllPlayersReady(): boolean {
     return true;
   }
 

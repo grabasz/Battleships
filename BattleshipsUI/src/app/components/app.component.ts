@@ -16,11 +16,23 @@ export class AppComponent {
   isVerticalShip = true;
 
   constructor(
-    private _game: GameService,
-    private _insertionService: InsertionService,
-    private _boardService: BoardService,
+    public _game: GameService,
+    public _insertionService: InsertionService,
+    public _boardService: BoardService,
 
   ) {}
+
+  getGame(){
+    return this._game;
+  }
+
+  getInsertion(){
+    return this._insertionService;
+  }
+
+  getBoard(){
+    return this._boardService;
+  }
 
 
 }

@@ -8,7 +8,7 @@ import { GameService } from 'src/app/services/game.service';
 })
 export class WaitingComponent implements OnInit {
 
-  constructor(private _game: GameService) { }
+  constructor(public _game: GameService) { }
 
   ngOnInit() {
   }

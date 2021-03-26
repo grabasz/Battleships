@@ -8,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class GameResultComponent implements OnInit {
 
-  constructor(private _game: GameService) { }
+  constructor(public _game: GameService) { }
 
   ngOnInit() {
   }
