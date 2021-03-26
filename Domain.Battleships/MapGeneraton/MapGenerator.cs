@@ -20,13 +20,14 @@ namespace Domain.Battleships.MapGeneraton
             
             foreach (var shipSize in shipLengths)
             {
-                insertedShips.Add(InsertShip(shipSize, insertedShips));
+                var uniqueShip = GetUniqueShip(shipSize, insertedShips);
+                insertedShips.Add(uniqueShip);
             }
 
             return insertedShips;
         }
 
-        private Ship InsertShip( int shipSize, List<Ship> map)
+        private Ship GetUniqueShip( int shipSize, List<Ship> insertedShips)
         {
             while (true)
             {
@@ -38,7 +39,7 @@ namespace Domain.Battleships.MapGeneraton
                     StartShepPoint = _randomShipDataGenerator.GetStartShipPoint(shipSize)
                 };
                 var shipForInsert= GetShip(randomShipLocation);
-                if (CanInsertShip( map, shipForInsert))
+                if (CanInsertShip( insertedShips, shipForInsert))
                 {
                     return shipForInsert;
                 }
@@ -85,7 +86,8 @@ namespace Domain.Battleships.MapGeneraton
         private static bool CanInsertShip( List<Ship> alreadyInsertedShips, Ship shipForInsert)
         {
             var allOccupiedPoints = alreadyInsertedShips.SelectMany(x => x.GetAllPoints());
-            return allOccupiedPoints.All(x => !shipForInsert.GetAllPoints().Contains(x));
+            var allPointsShipForInsert = shipForInsert.GetAllPoints();
+            return allOccupiedPoints.All(x => allPointsShipForInsert.All(y => !Equals(x, y)));
         }
     }
 }

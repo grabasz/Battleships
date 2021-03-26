@@ -1,3 +1,4 @@
+import { environment } from './../../environments/environment.prod';
 import { environment } from './../../environments/environment';
 import { Injectable } from "@angular/core";
 import { HttpTransportType, HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
@@ -11,11 +12,12 @@ export class SignalRService {
   }
 
   private hubConnection: HubConnection;
-
+  env = environment;
   public startConnection() {
     this.hubConnection = new HubConnectionBuilder()
     .configureLogging(LogLevel.Debug)
       .withUrl(this.getApiUrl()
+      , this.getOptions()
       )
       .build();
     this.hubConnection
@@ -24,8 +26,17 @@ export class SignalRService {
       .catch((err) => console.log("Error while starting connection: " + err));
   }
 
+  private getOptions() {
+    if(!this.env.production) {
+    return {
+      skipNegotiation: true,
+      transport: HttpTransportType.WebSockets
+    };
+    }
+  }
+
   private getApiUrl(): string {
-    return environment.apiUrl;
+    return this.env.apiUrl;
   }
 
   public sendData(data: string[][]) {

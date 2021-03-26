@@ -41,7 +41,7 @@ namespace Domain.Battleships.Model
         {
             if ((obj is Coordinate coordinate))
             {
-                return coordinate.Row == Row && coordinate.Column == Column;
+                return coordinate.Row.Equals(Row)  && coordinate.Column.Equals(Column) ;
             }
 
             return false;
@@ -49,7 +49,7 @@ namespace Domain.Battleships.Model
 
         public override int GetHashCode()
         {
-            return Row.GetHashCode()* Column.GetHashCode();
+            return 100*RowToIndex + ColumnToIndex;
         }
     }
 }

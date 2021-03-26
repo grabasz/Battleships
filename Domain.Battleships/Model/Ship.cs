@@ -30,13 +30,18 @@ namespace Domain.Battleships.Model
 
             if (ShipFront.Column == ShipBack.Column)
             {
-                return GetCoodinatesForVerticalShip().ToList();
+                return GetCoordinatesForVerticalShip().ToList();
             }
 
             throw new Exception("Cannot get points for diagonal ship");
         }
 
-        private IEnumerable<Coordinate> GetCoodinatesForVerticalShip()
+        private static string IntToLetter(int i)
+        {
+            return ((char)(i + 64)).ToString();
+        }
+
+        private IEnumerable<Coordinate> GetCoordinatesForVerticalShip()
         {
             var front = ShipFront.RowToIndex + 1;
             var back = ShipBack.RowToIndex + 1;
@@ -47,11 +52,6 @@ namespace Domain.Battleships.Model
             {
                 yield return new Coordinate(IntToLetter(i), ShipFront.Column);
             }
-        }
-
-        private static string IntToLetter(int i)
-        {
-            return ((char)(i + 64)).ToString();
         }
 
         private IEnumerable<Coordinate> GetCoordinatesForHorizontalShip()
