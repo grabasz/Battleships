@@ -1,4 +1,5 @@
-start "Dotnet" dotnet run --project BattleShipAPI/BattleShipAPI.csproj --urls "https://localhost:44365"
+start "Dotnet" dotnet run --project BattleShipAPI/BattleShipAPI.csproj
 cd BattleshipsUI
-npm install
+rem npm install --quiet --no-progress
 npm start
+cd ..
