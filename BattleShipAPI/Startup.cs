@@ -41,12 +41,6 @@ namespace BattleShipAPI
                             .AllowAnyMethod()
                             .AllowAnyHeader()
                             .AllowCredentials());
-//                        builder
-//                            .AllowAnyOrigin()
-//                            .AllowAnyMethod()
-//                            .AllowAnyHeader()
-//                            .AllowCredentials()
-//                        );
             });
 
         }
@@ -56,12 +50,8 @@ namespace BattleShipAPI
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
 
-//            app.UseHttpsRedirection();
             app.UseRouting();
             app.UseCors("CorsPolicy");
-
-//            app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
