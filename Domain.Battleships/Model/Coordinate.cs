@@ -32,8 +32,8 @@ namespace Domain.Battleships.Model
             return new Coordinate(rowToLetter, columnString);
         }
 
-        public string Row { get; set; }
-        public string Column { get; set; }
+        public string Row { get; }
+        public string Column { get; }
 
         public int RowToIndex => Row.ToUpper()[0] % 32 - 1;
         public int ColumnToIndex => int.Parse(Column) - 1;
@@ -45,6 +45,11 @@ namespace Domain.Battleships.Model
             }
 
             return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return Row.GetHashCode()* Column.GetHashCode();
         }
     }
 }

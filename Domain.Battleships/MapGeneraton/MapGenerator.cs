@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Domain.Battleships.Model;
 
 namespace Domain.Battleships.MapGeneraton
@@ -19,13 +20,13 @@ namespace Domain.Battleships.MapGeneraton
             
             foreach (var shipSize in shipLengths)
             {
-                insertedShips.Add(InsertShip(shipSize, map));
+                insertedShips.Add(InsertShip(shipSize, insertedShips));
             }
 
             return insertedShips;
         }
 
-        private Ship InsertShip( int shipSize, bool[,] map)
+        private Ship InsertShip( int shipSize, List<Ship> map)
         {
             while (true)
             {
@@ -36,23 +37,23 @@ namespace Domain.Battleships.MapGeneraton
                     ConstantRowOrColumn = _randomShipDataGenerator.GetRand0To9(),
                     StartShepPoint = _randomShipDataGenerator.GetStartShipPoint(shipSize)
                 };
-
-                if (CanInsertShip( map, randomShipLocation))
+                var shipForInsert= GetShip(randomShipLocation);
+                if (CanInsertShip( map, shipForInsert))
                 {
-                    if(randomShipLocation.IsVertical)
-                        return  PlaceShipVerticalOnMap( map, randomShipLocation);
-                    return PlaceShipHorizontalOnMap(map, randomShipLocation);
+                    return shipForInsert;
                 }
             }
         }
 
-        private static Ship PlaceShipVerticalOnMap(bool[,] map, RandomShipLocation randomShipLocation)
+        private static Ship GetShip(RandomShipLocation randomShipLocation)
         {
-            for (var i = randomShipLocation.StartShepPoint; i < randomShipLocation.ShipSize; i++)
-            {
-                map[i, randomShipLocation.ConstantRowOrColumn] = true;
-            }
+            if (randomShipLocation.IsVertical)
+                return PlaceShipVerticalOnMap(randomShipLocation);
+            return PlaceShipHorizontalOnMap(randomShipLocation);
+        }
 
+        private static Ship PlaceShipVerticalOnMap(RandomShipLocation randomShipLocation)
+        {
             return CreateVerticalShip(randomShipLocation);
         }
 
@@ -76,31 +77,15 @@ namespace Domain.Battleships.MapGeneraton
             };
         }
 
-        private static Ship PlaceShipHorizontalOnMap(bool[,] map, RandomShipLocation randomShipLocation)
+        private static Ship PlaceShipHorizontalOnMap(RandomShipLocation randomShipLocation)
         {
-            for (var i = randomShipLocation.StartShepPoint; i < randomShipLocation.ShipSize; i++)
-            {
-                map[randomShipLocation.ConstantRowOrColumn, i] = true;
-            }
-
             return CreateHorizontalShip(randomShipLocation);
         }
 
-        private static bool CanInsertShip( bool[,] map, RandomShipLocation randomShipLocation)
+        private static bool CanInsertShip( List<Ship> alreadyInsertedShips, Ship shipForInsert)
         {
-            for (var i = randomShipLocation.StartShepPoint; i < randomShipLocation.ShipSize; i++)
-            {
-                if (randomShipLocation.IsVertical)
-                {
-                    if (map[i, randomShipLocation.ConstantRowOrColumn])
-                        return false;
-                }
-                else
-                    return !map[randomShipLocation.ConstantRowOrColumn, i];
-                
-            }
-
-            return true;
+            var allOccupiedPoints = alreadyInsertedShips.SelectMany(x => x.GetAllPoints());
+            return allOccupiedPoints.All(x => !shipForInsert.GetAllPoints().Contains(x));
         }
     }
 }

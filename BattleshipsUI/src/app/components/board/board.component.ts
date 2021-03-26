@@ -49,8 +49,9 @@ export class BoardComponent implements OnInit {
       this._insertionService.insertShip(rowIndex, columnIndex);
       return;
     }
-
+    if(!status.wasDiscovered && !this.board.isMyBoard) {
     this._signalR.play(this._game.getGameId(), rowIndex, columnIndex);
+    }
   }
 
   onMouseEnter(rowIndex: number, columnIndex: number) {
