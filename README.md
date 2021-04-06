@@ -6,6 +6,6 @@ How to run:
 4. Please run the script ./StartGame.bat in order to run game localy
 
 Deployment on Azure:
-Web : https://battleshipuiapp.azurewebsites.net/  ( is not working due to cors )
+Web : https://csb100320006f10a79d.z6.web.core.windows.net/
 
 API : https://battleshipapi20210325145705.azurewebsites.net/hub
